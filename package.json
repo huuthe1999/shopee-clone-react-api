@@ -30,12 +30,10 @@
     "prettier": "^2.8.2",
     "typescript": "*"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --cache --fix"
+    "*.{js,ts,jsx,tsx}": [
+      "yarn lint",
+      "yarn format"
+    ]
   }
 }
