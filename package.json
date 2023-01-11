@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "format": "eslint --ignore-path .eslintignore --ext .js,.ts . --fix",
-    "postinstall": "husky install",
+    "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -32,8 +32,10 @@
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
-      "yarn lint",
-      "yarn format"
+      "eslint --cache --fix"
+    ],
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
     ]
   }
 }
