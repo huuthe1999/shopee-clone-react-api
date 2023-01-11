@@ -17,5 +17,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
+    'padding-line-between-statements': ['error', { blankLine: 'always', prev: '*', next: '*' }],
   },
 }
