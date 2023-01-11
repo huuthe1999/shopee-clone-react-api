@@ -1,13 +1,11 @@
-type Book = {
+type AnotherBook = {
   title: string
   author: string
 }
 
-const book: Book = {
+const book: AnotherBook = {
   title: 'Cool Book',
   author: 'John Doe',
 }
 
 console.log(book)
-
-export {}

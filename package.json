@@ -6,13 +6,15 @@
   "scripts": {
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "format": "eslint --ignore-path .eslintignore --ext .js,.ts . --fix",
-    "postinstall": "husky install",
+    "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^17.4.1",
+    "@commitlint/config-conventional": "^17.4.0",
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.48.1",
@@ -25,13 +27,15 @@
     "eslint-plugin-promise": "^6.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
+    "prettier": "^2.8.2",
     "typescript": "*"
   },
   "lint-staged": {
-    "*.ts": [
-      "yarn lint",
-      "yarn format",
-      "git add ."
+    "*.{js,ts,jsx,tsx}": [
+      "eslint --cache --fix"
+    ],
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
     ]
   }
 }
