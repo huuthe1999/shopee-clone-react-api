@@ -1,3 +1,7 @@
+import { randomUUID } from 'crypto'
+
+import add, { AnotherBook } from '@src/demo'
+
 type Book = {
   title: string
   author: string
@@ -8,6 +12,13 @@ const book: Book = {
   author: 'John Doe',
 }
 
-console.log(book)
+const id = randomUUID()
+
+const book2: AnotherBook = {
+  title: 'Cool Book2',
+  author: 'John Doe2',
+}
+
+console.log(book, book2, add(3, 4))
 
 export {}

@@ -7,3 +7,5 @@ const book: Book = {
   title: 'Cool Book',
   author: 'John Doe',
 }
+
+console.log(book)
