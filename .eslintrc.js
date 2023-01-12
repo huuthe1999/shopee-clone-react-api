@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    jest: true,
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
@@ -31,7 +32,7 @@ module.exports = {
     'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
     'padding-line-between-statements': [
       'error',
-      { blankLine: 'always', prev: ['*'], next: '*' },
+      { blankLine: 'always', prev: ['*'], next: ['*'] },
       { blankLine: 'any', prev: ['import'], next: ['*'] },
       { blankLine: 'always', prev: ['import'], next: '*' },
     ],

@@ -1,6 +1,10 @@
+import dotenv from 'dotenv-safe'
+
+import { add, AnotherBook } from '@utils'
+
 import { randomUUID } from 'crypto'
 
-import add, { AnotherBook } from '@src/demo'
+dotenv.config({ allowEmptyValues: true })
 
 type Book = {
   title: string
@@ -19,6 +23,6 @@ const book2: AnotherBook = {
   author: 'John Doe2',
 }
 
-console.log(book, book2, add(3, 4))
+console.log(book, book2, id, add(7, 4), process.env.SECRET)
 
 export {}
