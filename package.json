@@ -6,8 +6,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "nodemon src/index.ts",
-    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
-    "format": "eslint --ignore-path .eslintignore --ext .js,.ts . --fix",
+    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts ./src",
+    "format": "eslint --ignore-path .eslintignore --ext .js,.ts ./src --fix",
     "prepare": "husky install",
     "test": "jest",
     "test:unit": "jest unit",
@@ -48,7 +48,7 @@
   },
   "lint-staged": {
     "**/*.{js,ts,jsx,tsx}": [
-      "eslint . --cache --fix"
+      "eslint . --fix"
     ],
     "**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write ."

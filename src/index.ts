@@ -1,6 +1,6 @@
 import dotenv from 'dotenv-safe'
 
-import { add, AnotherBook } from '@utils'
+import { add, AnotherBook } from '@/utils'
 
 import { randomUUID } from 'crypto'
 
