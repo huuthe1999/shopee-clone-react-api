@@ -8,13 +8,12 @@ export const errorHandler = (error, req, res, next) => {
   let errorMessage = 'An unknown error occurred'
   let statusCode = 500
 
-  if (error instanceof Error) {
+  if (error instanceof Error || isHttpError(error)) {
     errorMessage = error.message
   }
 
   if (isHttpError(error)) {
     statusCode = error.status
-    errorMessage = error.message
   }
   res.status(statusCode).json(createFailedResponse(errorMessage))
 }

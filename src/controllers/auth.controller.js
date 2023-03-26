@@ -152,7 +152,11 @@ const logOut = (req, res) => {
     return res.status(200).json(createSuccessResponse(successMessage, undefined))
   }
 
-  res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'None', secure: true })
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    sameSite: 'None',
+    secure: process.env.NODE_ENV !== 'development'
+  })
   res.status(200).json(createSuccessResponse(successMessage, undefined))
 }
 
