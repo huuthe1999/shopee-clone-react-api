@@ -1,9 +1,18 @@
 import { Router } from 'express'
 
 import authMiddleware from '../controllers/auth.controller.js'
-import { loginLimiter } from '../middleware/auth.middleware.js'
+import checkAuth from '../middleware/check-auth.middleware.js'
+import { loginLimiter } from '../middleware/login-limiter.middleware.js'
+import { authValidator } from '../validations/auth.validate.js'
 const authRoute = Router()
 
-authRoute.route('/').post(loginLimiter, authMiddleware.login)
+authRoute.route('/login').post(loginLimiter, authValidator, authMiddleware.login)
+authRoute.route('/register').post(authValidator, authMiddleware.register)
+authRoute.route('/refreshToken').post(authMiddleware.refreshToken)
+
+authRoute.use(checkAuth)
+
+authRoute.route('/me').get(authMiddleware.getProfile)
+authRoute.route('/logout').post(authMiddleware.logOut)
 
 export default authRoute

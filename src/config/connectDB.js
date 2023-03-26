@@ -1,10 +1,10 @@
-import { connect } from 'mongoose'
+import mongoose from 'mongoose'
 
 const connectDB = async () => {
   try {
-    await connect(process.env.DATABASE_URL)
+    await mongoose.connect(process.env.DATABASE_URL, { autoIndex: false })
   } catch (err) {
-    console.log(err)
+    console.log('Connection error: ', err)
   }
 }
 

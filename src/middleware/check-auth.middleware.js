@@ -1,18 +1,26 @@
-import { createHttpError } from 'http-errors'
-import { verify } from 'jsonwebtoken'
+import createHttpError from 'http-errors'
+import jwt from 'jsonwebtoken'
 
-const checkAuth = (req, res, next) => {
+import { verifyToken } from '../utils/jwt.util.js'
+
+const checkAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization
-  if (!authHeader.startWiths('Bearer ')) {
-    next(createHttpError(401, 'User is not authenticated'))
+
+  if (!authHeader.startsWith('Bearer ')) {
+    next(createHttpError(401, 'Người dùng chưa xác thực'))
   }
   const token = authHeader.split(' ')[1]
 
-  verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-    if (err) next(createHttpError(403, 'User is forbidden'))
-    req.user.id = decoded.id
+  try {
+    const decoded = await verifyToken(token, process.env.TOKEN_SECRET_KEY)
+    req.user = decoded.userInfo
     next()
-  })
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError)
+      return next(createHttpError(401, 'Phiên đăng nhập đã hết hạn'))
+
+    next(createHttpError(403, 'Xác thực token xảy ra lỗi'))
+  }
 }
 
 export default checkAuth
