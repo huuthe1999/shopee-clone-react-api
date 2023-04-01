@@ -15,6 +15,7 @@ export const errorHandler = (error, req, res, next) => {
   if (isHttpError(error)) {
     statusCode = error.status
   }
+
   res.status(statusCode).json(createFailedResponse(errorMessage))
 }
 

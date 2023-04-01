@@ -21,6 +21,8 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.set('trust proxy', 1)
+// Welcome path
+app.get('/', (req, res) => res.json({ message: 'Connect to DB successfully' }))
 app.use('/auth', authRoute)
 
 // Not found endpoint & handle error middleware

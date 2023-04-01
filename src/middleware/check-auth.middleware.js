@@ -6,8 +6,8 @@ import { verifyToken } from '../utils/jwt.util.js'
 const checkAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization
 
-  if (!authHeader.startsWith('Bearer ')) {
-    next(createHttpError(401, 'Người dùng chưa xác thực'))
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return next(createHttpError(401, 'Người dùng chưa xác thực'))
   }
   const token = authHeader.split(' ')[1]
 

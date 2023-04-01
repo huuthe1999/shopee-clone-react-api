@@ -49,7 +49,7 @@ const login = async (req, res, next) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true, //accessible only by web server
       secure: process.env.NODE_ENV !== 'development', //https
-      sameSite: 'None', //cross-site cookie
+      sameSite: process.env.NODE_ENV !== 'development' ? 'None' : 'Lax', //cross-site cookie
       maxAge: EXPIRES_REFRESH_TOKEN_JWT
     })
 
@@ -92,7 +92,7 @@ const register = async (req, res, next) => {
 
     newUser = newUser.toObject()
 
-    res.status(201).json(createSuccessResponse('Đăng kí thành công', newUser))
+    res.status(201).json(createSuccessResponse('Đăng kí thành công', { user: newUser }))
   } catch (error) {
     next(error)
   }
@@ -154,7 +154,7 @@ const logOut = (req, res) => {
 
   res.clearCookie('refreshToken', {
     httpOnly: true,
-    sameSite: 'None',
+    sameSite: process.env.NODE_ENV !== 'development' ? 'None' : 'Lax',
     secure: process.env.NODE_ENV !== 'development'
   })
   res.status(200).json(createSuccessResponse(successMessage, undefined))

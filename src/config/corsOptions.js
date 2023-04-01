@@ -6,6 +6,8 @@ export const corsOptions = {
       ? callback(null, true)
       : callback(new Error('Not allowed by CORS'))
   },
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400, // 1 day
   credentials: true,
   optionsSuccessStatus: 200
 }
