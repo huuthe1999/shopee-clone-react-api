@@ -7,7 +7,7 @@ const checkAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return next(createHttpError(401, 'Người dùng chưa xác thực'))
+    return next(createHttpError(401, 'Người dùng cần xác thực'))
   }
   const token = authHeader.split(' ')[1]
 
@@ -16,10 +16,9 @@ const checkAuth = async (req, res, next) => {
     req.user = decoded.userInfo
     next()
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError)
-      return next(createHttpError(401, 'Phiên đăng nhập đã hết hạn'))
+    if (error instanceof jwt.TokenExpiredError) return next(createHttpError(401, 'TOKEN_EXPIRED'))
 
-    next(createHttpError(403, 'Xác thực token xảy ra lỗi'))
+    return next(createHttpError(403, 'Xác thực token xảy ra lỗi'))
   }
 }
 

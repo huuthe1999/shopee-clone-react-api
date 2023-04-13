@@ -3,8 +3,6 @@ import createHttpError, { isHttpError } from 'http-errors'
 import { createFailedResponse } from '../utils/format-response.util.js'
 
 export const errorHandler = (error, req, res, next) => {
-  console.log('🚀 ~ errorHandler ~ error:', error)
-
   let errorMessage = 'An unknown error occurred'
   let statusCode = 500
 

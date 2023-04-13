@@ -8,7 +8,7 @@ const authRoute = Router()
 
 authRoute.route('/login').post(loginLimiter, authValidator, authMiddleware.login)
 authRoute.route('/register').post(authValidator, authMiddleware.register)
-authRoute.route('/refreshToken').post(authMiddleware.refreshToken)
+authRoute.route('/refreshToken').get(authMiddleware.refreshToken)
 authRoute.route('/logout').post(authMiddleware.logOut)
 
 authRoute.use(checkAuth)

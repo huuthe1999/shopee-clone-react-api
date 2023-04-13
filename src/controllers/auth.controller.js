@@ -50,7 +50,7 @@ const login = async (req, res, next) => {
       httpOnly: true, //accessible only by web server
       secure: process.env.NODE_ENV !== 'development', //https
       sameSite: process.env.NODE_ENV !== 'development' ? 'None' : 'Lax', //cross-site cookie
-      maxAge: EXPIRES_REFRESH_TOKEN_JWT
+      maxAge: EXPIRES_REFRESH_TOKEN_JWT * 1000
     })
 
     res.json(
@@ -78,7 +78,13 @@ const register = async (req, res, next) => {
     const existingUser = await UserModel.findOne({ email }).exec()
 
     if (existingUser) {
-      throw createHttpError(409, 'Email đã tồn tại')
+      return res.status(422).json(
+        createFailedResponse('Vui lòng kiêm tra thông tin', [
+          {
+            email: 'Email đã tồn tại'
+          }
+        ])
+      )
     }
 
     // const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -116,7 +122,7 @@ const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.cookies
 
   if (!refreshToken) {
-    throw createHttpError(401, 'Người dùng chưa xác thực')
+    throw createHttpError(401, 'Phiên đăng nhập đã hết hạn')
   }
 
   try {
@@ -138,9 +144,11 @@ const refreshToken = async (req, res, next) => {
       EXPIRES_TOKEN_JWT
     )
 
-    res.json({ accessToken })
+    res.status(201).json(createSuccessResponse('Lấy lại token thành công', { accessToken }))
   } catch (error) {
-    next(createHttpError(403, 'Người dùng bị cấm truy cập'))
+    console.log('🚀 ~ refreshToken ~ error:', error)
+
+    return next(createHttpError(401, 'Phiên đăng nhập đã hết hạn'))
   }
 }
 
