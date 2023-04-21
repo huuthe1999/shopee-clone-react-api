@@ -1,4 +1,6 @@
 import mongoose from 'mongoose'
+
+import { ROLES } from '../constants/index.js'
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -23,7 +25,7 @@ const userSchema = new mongoose.Schema(
     roles: {
       type: [String],
       default: ['User'],
-      enum: ['User', 'Admin']
+      enum: Object.values(ROLES)
     }
   },
   {

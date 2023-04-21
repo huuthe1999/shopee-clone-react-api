@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors'
 import jwt from 'jsonwebtoken'
 
+import UserModel from '../models/user.model.js'
 import { verifyToken } from '../utils/jwt.util.js'
 
 const checkAuth = async (req, res, next) => {
@@ -13,8 +14,17 @@ const checkAuth = async (req, res, next) => {
 
   try {
     const decoded = await verifyToken(token, process.env.TOKEN_SECRET_KEY)
-    req.user = decoded.userInfo
-    next()
+
+    const findUser = await UserModel.findById(decoded.userId).exec()
+    console.log('🚀 ~ checkAuth ~ findUser:', findUser)
+
+    if (findUser) {
+      req.userId = decoded.userId
+      req.roles = findUser.roles
+      next()
+    } else {
+      next(createHttpError(403, 'Xác thực người dùng xảy ra lỗi'))
+    }
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) return next(createHttpError(401, 'TOKEN_EXPIRED'))
 

@@ -31,17 +31,14 @@ const login = async (req, res, next) => {
 
     const accessToken = await generateToken(
       {
-        userInfo: {
-          id: foundUser._id,
-          roles: foundUser.roles
-        }
+        userId: foundUser._id
       },
       process.env.TOKEN_SECRET_KEY,
       EXPIRES_TOKEN_JWT
     )
 
     const refreshToken = await generateToken(
-      { id: foundUser._id },
+      { userId: foundUser._id },
       process.env.REFRESH_TOKEN_SECRET_KEY,
       EXPIRES_REFRESH_TOKEN_JWT
     )
@@ -106,7 +103,7 @@ const register = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
   try {
-    const user = await UserModel.findById(req.user.id).exec()
+    const user = await UserModel.findById(req.userId).exec()
 
     if (!user) {
       throw createHttpError(404, 'User không tồn tại')
@@ -128,17 +125,14 @@ const refreshToken = async (req, res, next) => {
   try {
     const decoded = await verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET_KEY)
 
-    const foundUser = await UserModel.findById(decoded.id).exec()
+    const foundUser = await UserModel.findById(decoded.userId).exec()
     if (!foundUser) {
       throw createHttpError(404, 'Người dùng không còn tồn tại')
     }
 
     const accessToken = await generateToken(
       {
-        userInfo: {
-          id: foundUser._id,
-          roles: foundUser.roles
-        }
+        userId: foundUser._id
       },
       process.env.TOKEN_SECRET_KEY,
       EXPIRES_TOKEN_JWT
@@ -146,18 +140,16 @@ const refreshToken = async (req, res, next) => {
 
     res.status(201).json(createSuccessResponse('Lấy lại token thành công', { accessToken }))
   } catch (error) {
-    console.log('🚀 ~ refreshToken ~ error:', error)
-
     return next(createHttpError(401, 'Phiên đăng nhập đã hết hạn'))
   }
 }
 
-const logOut = (req, res) => {
+const logOut = (req, res, next) => {
   const { refreshToken } = req.cookies
   const successMessage = 'Đăng xuất thành công'
 
   if (!refreshToken) {
-    return res.status(200).json(createSuccessResponse(successMessage, undefined))
+    return next(createHttpError(401, 'Người dùng chưa xác thực'))
   }
 
   res.clearCookie('refreshToken', {
