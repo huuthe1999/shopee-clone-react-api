@@ -8,7 +8,7 @@ const checkRoles = (...allowRoles) => {
     const roles = [...allowRoles]
 
     // // Check if every role in `roles` array exists in the `ROLES` array.
-    const result = req.roles.every(role => roles.includes(role))
+    const result = req.roles.some(role => roles.includes(role))
 
     if (!result) {
       // Nếu có role không khớp

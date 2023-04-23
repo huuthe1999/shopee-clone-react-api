@@ -8,7 +8,7 @@ import morgan from 'morgan'
 import connectDB from './config/connectDB.js'
 import { corsOptions } from './config/corsOptions.js'
 import { errorHandler, notFoundEndPoint } from './middleware/error-handler.middleware.js'
-import authRoute from './routes/auth.route.js'
+import indexRoute from './routes/index.route.js'
 
 connectDB()
 const app = express()
@@ -23,7 +23,8 @@ app.use(cookieParser())
 app.set('trust proxy', 1)
 // Welcome path
 app.get('/', (req, res) => res.json({ message: 'Connect to DB successfully' }))
-app.use('/auth', authRoute)
+
+app.use(indexRoute)
 
 // Not found endpoint & handle error middleware
 app.use(notFoundEndPoint)

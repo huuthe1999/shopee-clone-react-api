@@ -16,7 +16,6 @@ const checkAuth = async (req, res, next) => {
     const decoded = await verifyToken(token, process.env.TOKEN_SECRET_KEY)
 
     const findUser = await UserModel.findById(decoded.userId).exec()
-    console.log('🚀 ~ checkAuth ~ findUser:', findUser)
 
     if (findUser) {
       req.userId = decoded.userId

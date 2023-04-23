@@ -32,11 +32,13 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     virtuals: true,
     toObject: {
-      useProjection: true
+      useProjection: true,
+      versionKey: false
     },
-    toJSON: { useProjection: true }
+    toJSON: { useProjection: true, versionKey: false }
   }
 )
 
 const UserModel = mongoose.model('User', userSchema)
+
 export default UserModel
