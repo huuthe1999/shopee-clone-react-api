@@ -6,10 +6,19 @@ export default function (duration) {
     const key = req.originalUrl
 
     if (req.method !== 'GET') {
+      // If modify data => delete cache
+      const keys = myCache.keys()
+
+      keys.forEach(keyMatch => {
+        if (keyMatch.includes(req.baseUrl)) {
+          myCache.del(keyMatch)
+        }
+      })
+
       // Clear cache on POST, PUT, DELETE of the same route
-      if (myCache.has(key)) {
-        myCache.del(key)
-      }
+      // if (myCache.has(key)) {
+      //   myCache.del(key)
+      // }
       return next()
     }
 
@@ -19,7 +28,7 @@ export default function (duration) {
 
     // If cache exists, send cache result
     if (cacheResponse) {
-      res.json(JSON.parse(cacheResponse))
+      return res.json(JSON.parse(cacheResponse))
     } else {
       // Send response
       res.sendResponse = res.send

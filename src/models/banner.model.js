@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 
+import { customLabels } from '../utils/pagination.util.js'
+
 const bannerSchema = new mongoose.Schema(
   {
     image: {
@@ -21,13 +23,6 @@ bannerSchema.set('toJSON', {
   flattenMaps: false,
   versionKey: false
 })
-
-const customLabels = {
-  totalDocs: 'totalItems',
-  docs: 'items',
-  limit: 'perPage',
-  page: 'currentPage'
-}
 
 mongoosePaginate.paginate.options = {
   sort: { updatedAt: -1 },

@@ -1,7 +1,13 @@
 import bcrypt from 'bcrypt'
 import createHttpError from 'http-errors'
 
-import { EXPIRES_REFRESH_TOKEN_JWT, EXPIRES_TOKEN_JWT } from '../constants/index.js'
+import {
+  ADMIN_EXPIRES_REFRESH_TOKEN_JWT,
+  ADMIN_EXPIRES_TOKEN_JWT,
+  EXPIRES_REFRESH_TOKEN_JWT,
+  EXPIRES_TOKEN_JWT,
+  ROLES
+} from '../constants/index.js'
 import UserModel from '../models/user.model.js'
 import { createFailedResponse, createSuccessResponse } from '../utils/format-response.util.js'
 import { generateToken, verifyToken } from '../utils/jwt.util.js'
@@ -34,13 +40,15 @@ const login = async (req, res, next) => {
         userId: foundUser._id
       },
       process.env.TOKEN_SECRET_KEY,
-      EXPIRES_TOKEN_JWT
+      foundUser.roles.includes(ROLES.Admin) ? ADMIN_EXPIRES_TOKEN_JWT : EXPIRES_TOKEN_JWT
     )
 
     const refreshToken = await generateToken(
       { userId: foundUser._id },
       process.env.REFRESH_TOKEN_SECRET_KEY,
-      EXPIRES_REFRESH_TOKEN_JWT
+      foundUser.roles.includes(ROLES.Admin)
+        ? ADMIN_EXPIRES_REFRESH_TOKEN_JWT
+        : EXPIRES_REFRESH_TOKEN_JWT
     )
 
     res.cookie('refreshToken', refreshToken, {
@@ -53,7 +61,9 @@ const login = async (req, res, next) => {
     res.json(
       createSuccessResponse('Đăng nhập thành công', {
         accessToken,
-        expiresIn: EXPIRES_TOKEN_JWT,
+        expiresIn: foundUser.roles.includes(ROLES.Admin)
+          ? ADMIN_EXPIRES_TOKEN_JWT
+          : EXPIRES_TOKEN_JWT,
         user: foundUser
       })
     )
@@ -135,7 +145,7 @@ const refreshToken = async (req, res, next) => {
         userId: foundUser._id
       },
       process.env.TOKEN_SECRET_KEY,
-      EXPIRES_TOKEN_JWT
+      foundUser.roles.includes(ROLES.Admin) ? ADMIN_EXPIRES_TOKEN_JWT : EXPIRES_TOKEN_JWT
     )
 
     res.status(201).json(createSuccessResponse('Lấy lại token thành công', { accessToken }))
@@ -157,7 +167,7 @@ const logOut = (req, res, next) => {
     sameSite: process.env.NODE_ENV !== 'development' ? 'None' : 'Lax',
     secure: process.env.NODE_ENV !== 'development'
   })
-  res.status(200).json(createSuccessResponse(successMessage, undefined))
+  res.status(200).json(createSuccessResponse(successMessage))
 }
 
 const authMiddleware = { login, register, refreshToken, getProfile, logOut }
