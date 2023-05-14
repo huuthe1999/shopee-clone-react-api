@@ -39,13 +39,17 @@ const login = async (req, res, next) => {
       {
         userId: foundUser._id
       },
-      process.env.TOKEN_SECRET_KEY,
+      foundUser.roles.includes(ROLES.Admin)
+        ? process.env.ADMIN_TOKEN_SECRET_KEY
+        : process.env.TOKEN_SECRET_KEY,
       foundUser.roles.includes(ROLES.Admin) ? ADMIN_EXPIRES_TOKEN_JWT : EXPIRES_TOKEN_JWT
     )
 
     const refreshToken = await generateToken(
       { userId: foundUser._id },
-      process.env.REFRESH_TOKEN_SECRET_KEY,
+      foundUser.roles.includes(ROLES.Admin)
+        ? process.env.ADMIN_REFRESH_TOKEN_SECRET_KEY
+        : process.env.REFRESH_TOKEN_SECRET_KEY,
       foundUser.roles.includes(ROLES.Admin)
         ? ADMIN_EXPIRES_REFRESH_TOKEN_JWT
         : EXPIRES_REFRESH_TOKEN_JWT
@@ -55,7 +59,10 @@ const login = async (req, res, next) => {
       httpOnly: true, //accessible only by web server
       secure: process.env.NODE_ENV !== 'development', //https
       sameSite: process.env.NODE_ENV !== 'development' ? 'None' : 'Lax', //cross-site cookie
-      maxAge: EXPIRES_REFRESH_TOKEN_JWT * 1000
+      maxAge:
+        (foundUser.roles.includes(ROLES.Admin)
+          ? ADMIN_EXPIRES_REFRESH_TOKEN_JWT
+          : EXPIRES_REFRESH_TOKEN_JWT) * 1000
     })
 
     res.json(
@@ -145,7 +152,7 @@ const refreshToken = async (req, res, next) => {
         userId: foundUser._id
       },
       process.env.TOKEN_SECRET_KEY,
-      foundUser.roles.includes(ROLES.Admin) ? ADMIN_EXPIRES_TOKEN_JWT : EXPIRES_TOKEN_JWT
+      EXPIRES_TOKEN_JWT
     )
 
     res.status(201).json(createSuccessResponse('Lấy lại token thành công', { accessToken }))

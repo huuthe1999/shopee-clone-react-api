@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import slugify from 'slugify'
 
+import { SHIPPINGS, SHOP_TYPES, STATUS } from '../constants/index.js'
 import { customLabels } from '../utils/pagination.util.js'
 
 const productSchema = new mongoose.Schema(
@@ -10,20 +11,46 @@ const productSchema = new mongoose.Schema(
       type: String,
       require: true
     },
-    images: {
-      type: [String],
-      default: [
-        'https://res.cloudinary.com/dknvhah81/image/upload/v1683429549/shoppe-default/20210604_RGFkOmxRF6Emt7SXpoGBDyZO_o1vv86.png'
-      ]
-    },
+    images: [
+      {
+        uid: String,
+        url: String,
+        name: String
+      }
+    ],
     category: {
       type: mongoose.Types.ObjectId,
       ref: 'Category',
       require: true
     },
+    subCategory: {
+      type: mongoose.Types.ObjectId,
+      require: true
+    },
+    province: {
+      idProvince: String,
+      name: String
+    },
+    shipping: {
+      type: [String],
+      default: [SHIPPINGS[2]],
+      enum: Object.values(SHIPPINGS)
+    },
+    shopType: {
+      type: [String],
+      enum: Object.values(SHOP_TYPES)
+    },
+    status: {
+      type: String,
+      default: STATUS[0],
+      enum: Object.values(STATUS)
+    },
     isActive: {
       type: Boolean,
       default: true
+    },
+    description: {
+      type: String
     },
     price: {
       type: Number,

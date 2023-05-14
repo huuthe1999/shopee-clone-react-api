@@ -14,11 +14,13 @@ const categorySchema = new mongoose.Schema(
       type: Boolean,
       default: true
     },
-    image: {
-      type: String,
-      default:
-        'https://res.cloudinary.com/dknvhah81/image/upload/v1683274837/shoppe-default/woocommerce-placeholder_yuatle.png'
-    },
+    images: [
+      {
+        uid: String,
+        url: String,
+        name: String
+      }
+    ],
     slug: {
       type: String,
       require: true,
@@ -28,6 +30,26 @@ const categorySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       require: true
+    },
+    subCategories: {
+      type: [
+        {
+          _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true
+          },
+          name: {
+            type: String,
+            required: true
+          }
+        }
+      ],
+      default: [
+        {
+          _id: new mongoose.Types.ObjectId(),
+          name: 'Mặc định'
+        }
+      ]
     }
   },
   {
@@ -39,7 +61,7 @@ categorySchema.set('toJSON', {
   versionKey: false
 })
 
-categorySchema.pre('validate', function (next) {
+categorySchema.pre('save', function (next) {
   if (this.name) {
     this.slug = slugify(this.name, {
       strict: true,
@@ -49,6 +71,17 @@ categorySchema.pre('validate', function (next) {
   next()
 })
 
+categorySchema.pre(/(update|Update)/, function (next) {
+  // Auto update slug in methods update
+  const name = this?.getUpdate()?.name
+  if (name) {
+    this.getUpdate().slug = slugify(name, {
+      strict: true,
+      locale: 'vi'
+    })
+    return next()
+  }
+})
 mongoosePaginate.paginate.options = {
   customLabels
 }

@@ -8,6 +8,7 @@ import morgan from 'morgan'
 import connectDB from './config/connectDB.js'
 import { corsOptions } from './config/corsOptions.js'
 import { errorHandler, notFoundEndPoint } from './middleware/error-handler.middleware.js'
+import adminRoute from './routes/admin/index.route.js'
 import indexRoute from './routes/index.route.js'
 
 connectDB()
@@ -25,6 +26,7 @@ app.set('trust proxy', 1)
 app.get('/', (req, res) => res.json({ message: 'Connect to DB successfully' }))
 
 app.use(indexRoute)
+app.use('/admin', adminRoute)
 
 // Not found endpoint & handle error middleware
 app.use(notFoundEndPoint)
@@ -33,3 +35,6 @@ app.use(errorHandler)
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
 })
+
+// randomProduct('645f7a085376c706cc202ad9', '645fd3414ae6af8648806324')
+// deleteAllProduct()

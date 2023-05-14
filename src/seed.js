@@ -1,5 +1,7 @@
 import slugify from 'slugify'
 
+import { SHIPPINGS, SHOP_TYPES, STATUS } from './constants/index.js'
+import { fakeData } from './fakeData.js'
 import CategoryModel from '../src/models/category.model.js'
 import ProductModel from '../src/models/product.model.js'
 import ProvinceModel from '../src/models/province.model.js'
@@ -8,7 +10,7 @@ const seedCate = Array(40)
   .fill(null)
   .map((item, index) => ({
     name: `Quần áo ${index + 1}`,
-    active: index % 2 === 0,
+    isActive: index % 2 === 0,
     user: '6453edaf86876e4dd8d760f8'
   }))
 
@@ -16,7 +18,7 @@ const seedProduct = Array(80)
   .fill(null)
   .map((item, index) => ({
     name: `Quần áo ${index + 1}`,
-    active: index % 2 === 0,
+    isActive: index % 2 === 0,
     price: (index + 1) * 1000,
     rating: +((index + 1) / 5).toFixed(2),
     quantity: index + 1,
@@ -27,7 +29,26 @@ const seedProduct = Array(80)
 
 const randomCate = async () => {
   try {
-    const result = await CategoryModel.insertMany(seedCate)
+    let data = await fetch('https://shopee.vn/api/v4/pages/get_homepage_category_list')
+    data = await data.json()
+    console.log('🚀 ~ randomCate ~ data:', data)
+    data = data.data.category_list
+
+    const categoryPromises = data.map(async item => {
+      const slug = slugify(item.display_name, {
+        strict: true,
+        locale: 'vi'
+      })
+
+      return {
+        ...item,
+        name: item.display_name,
+        user: '6453edaf86876e4dd8d760f8',
+        slug
+      }
+    })
+
+    const result = await CategoryModel.insertMany(await Promise.all(categoryPromises))
 
     console.log('🚀 ~ randomCate ~ result:', result)
   } catch (error) {
@@ -35,36 +56,81 @@ const randomCate = async () => {
   }
 }
 
-// const randomCate = async () => {
-//   try {
-//     const result = await CategoryModel.deleteMany()
-
-//     console.log('🚀 ~ randomCate ~ result:', result)
-//   } catch (error) {
-//     console.log('🚀 ~ CategoryModel.insertMany ~ err:', error)
-//   }
-// }
-
-const randomProduct = async () => {
+const deleteAllCate = async () => {
   try {
-    const categoryPromises = seedProduct.map(async item => {
-      const random = Math.floor(Math.random() * 40)
-      const category = await CategoryModel.findOne().skip(random).exec()
-      const slug = slugify(item.name, {
+    const result = await CategoryModel.deleteMany()
+
+    console.log('🚀 ~ randomCate ~ result:', result)
+  } catch (error) {
+    console.log('🚀 ~ CategoryModel.insertMany ~ err:', error)
+  }
+}
+const deleteAllProduct = async () => {
+  try {
+    const result = await ProductModel.deleteMany()
+
+    console.log('🚀 ~ randomCate ~ result:', result)
+  } catch (error) {
+    console.log('🚀 ~ CategoryModel.insertMany ~ err:', error)
+  }
+}
+
+const randomProduct = async (category, subCategory) => {
+  try {
+    const normalizeData = fakeData.map(async ({ item_basic }, index) => {
+      const random = Math.floor(Math.random() * 63)
+      const randomShippingIndex = Math.floor(Math.random() * Object.keys(SHIPPINGS).length)
+      const randomShopTypeIndex = Math.floor(Math.random() * Object.keys(SHOP_TYPES).length)
+      const randomStatusIndex = Math.floor(Math.random() * Object.keys(STATUS).length)
+      const province = await ProvinceModel.findOne().skip(random).exec()
+      console.log('🚀 ~ normalizeData ~ province:', province, random)
+
+      const slug = slugify(item_basic.name, {
         strict: true,
         locale: 'vi'
       })
+
       return {
-        ...item,
-        slug,
-        category: category._id
+        name: item_basic.name,
+        images: item_basic.images.map((image, i) => ({
+          uid: image,
+          url: `https://cf.shopee.vn/file/${image}_tn`,
+          name: item_basic.name + `-${i}`
+        })),
+        category,
+        subCategory,
+        province: { idProvince: province.idProvince, name: province.name },
+        shipping: [Object.values(SHIPPINGS)[randomShippingIndex]],
+        shopType: [Object.values(SHOP_TYPES)[randomShopTypeIndex]],
+        status: Object.values(STATUS)[randomStatusIndex],
+        isActive: index % 3 === 0,
+        price: item_basic.price / 100000,
+        quantity: item_basic.stock,
+        sold: item_basic.sold,
+        rating: item_basic.item_rating.rating_star,
+        discount: item_basic.show_discount,
+        viewed: item_basic.liked_count,
+        slug
       }
     })
 
-    const result = await ProductModel.insertMany(await Promise.all(categoryPromises))
+    // const categoryPromises = seedProduct.map(async item => {
+    //   const random = Math.floor(Math.random() * 40)
+    //   const category = await CategoryModel.findOne().skip(random).exec()
+    //   const slug = slugify(item.name, {
+    //     strict: true,
+    //     locale: 'vi'
+    //   })
+    //   return {
+    //     ...item,
+    //     slug,
+    //     category: category._id
+    //   }
+    // })
 
-    // const result = await ProductModel.deleteMany()
-    console.log('🚀 ~ randomCate ~ result:', result)
+    const result = await ProductModel.insertMany(await Promise.all(normalizeData))
+
+    // console.log('🚀 ~ randomCate ~ result:', result)
   } catch (error) {
     console.log('🚀 ~ CategoryModel.insertMany ~ err:', error)
   }
@@ -108,4 +174,11 @@ const removeRegexProvinces = async () => {
   }
 }
 
-export { randomCate, randomProduct, generateProvinces, removeRegexProvinces }
+export {
+  randomCate,
+  randomProduct,
+  generateProvinces,
+  removeRegexProvinces,
+  deleteAllCate,
+  deleteAllProduct
+}

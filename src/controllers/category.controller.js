@@ -55,8 +55,8 @@ const getCategories = async (req, res, next) => {
       }
     )
 
-    // res.set('x-total-count', result.totalPages)
-    // res.set('Access-Control-Expose-Headers', 'x-total-count')
+    res.set('x-total-count', result.totalPages)
+    res.set('Access-Control-Expose-Headers', 'x-total-count')
 
     return res.status(201).json(createSuccessResponse('Lấy danh mục thành công', result))
   } catch (error) {

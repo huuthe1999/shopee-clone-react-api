@@ -4,7 +4,8 @@ const provinceSchema = new mongoose.Schema(
   {
     idProvince: {
       type: String,
-      require: true
+      require: true,
+      unique: true
     },
     name: {
       type: String,
