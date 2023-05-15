@@ -12,3 +12,11 @@ export const mapSortByParam = value => {
       return 'viewed'
   }
 }
+
+export const extractSearchParam = searchParams => {
+  console.log('🚀 ~ extractSearchParam ~ searchParams:', searchParams)
+
+  const likeParams = {}
+  // searchParams.forEach((param)=>)
+  return searchParams
+}

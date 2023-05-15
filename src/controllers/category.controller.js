@@ -44,12 +44,13 @@ const getOneCategory = async (req, res, next) => {
 }
 
 const getCategories = async (req, res, next) => {
-  const { page, size } = req.query
+  const { page, size, select } = req.query
   const { limit, offset } = getPagination(page, size)
   try {
     const result = await CategoryModel.paginate(
       {},
       {
+        select: select ? select : {},
         offset,
         limit
       }

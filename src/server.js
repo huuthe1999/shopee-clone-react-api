@@ -36,5 +36,5 @@ mongoose.connection.once('open', () => {
   app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
 })
 
-// randomProduct('645f7a085376c706cc202ad9', '645fd3414ae6af8648806324')
+// randomProduct('Thoi-Trang-Nu', '6460d996eed977fdad32a906')
 // deleteAllProduct()

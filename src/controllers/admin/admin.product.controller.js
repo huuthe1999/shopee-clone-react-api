@@ -1,3 +1,5 @@
+import slugify from 'slugify'
+
 import ProductModel from '../../models/product.model.js'
 import { createFailedResponse, createSuccessResponse } from '../../utils/format-response.util.js'
 import { mapSortByParam } from '../../utils/product.util.js'
@@ -40,16 +42,26 @@ const getOneProduct = async (req, res, next) => {
 }
 
 const getProducts = async (req, res, next) => {
-  let { _start = 1, _end = 10, order, sortBy, categoryId } = req.query
+  let { _start = 1, _end = 10, order, sortBy, category, name } = req.query
 
   sortBy = mapSortByParam(sortBy)
 
-  const findOptions = categoryId ? { category: categoryId } : {}
+  let findOptions = category ? { category: { $in: category } } : {}
+
+  if (name) {
+    const slugName = slugify(name, {
+      strict: true,
+      locale: 'vi',
+      lower: false
+    })
+
+    findOptions = { $and: [{ ...findOptions }, { slug: { $regex: slugName, $options: 'i' } }] }
+  }
+
   try {
     const result = await ProductModel.paginate(findOptions, {
       offset: +_start,
       limit: +_end - +_start,
-      // sort: { sortBy: sortBy === 'price' ? order : -1 }
       sort: { [sortBy]: order ?? -1 }
     })
 

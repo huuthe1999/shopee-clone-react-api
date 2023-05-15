@@ -41,24 +41,22 @@ const getOneProduct = async (req, res, next) => {
 }
 
 const getProducts = async (req, res, next) => {
-  let { page, size, order, sortBy } = req.query
+  let { page, size, order, sortBy, categorySlug } = req.query
 
   sortBy = mapSortByParam(sortBy)
-  console.log('🚀 ~ getProducts ~ sortBy:', sortBy === 'price', order)
 
   // Only order in price
 
   const { limit, offset } = getPagination(page, size)
+
+  const queryOptions = categorySlug ? { categorySlug: { $regex: categorySlug, $options: 'i' } } : {}
   try {
-    const result = await ProductModel.paginate(
-      {},
-      {
-        offset,
-        limit,
-        // sort: { sortBy: sortBy === 'price' ? order : -1 }
-        sort: { [sortBy]: order ?? -1 }
-      }
-    )
+    const result = await ProductModel.paginate(queryOptions, {
+      offset,
+      limit,
+      // sort: { sortBy: sortBy === 'price' ? order : -1 }
+      sort: { [sortBy]: order ?? -1 }
+    })
 
     // res.set('x-total-count', result.totalPages)
     // res.set('Access-Control-Expose-Headers', 'x-total-count')

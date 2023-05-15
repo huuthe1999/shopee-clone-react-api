@@ -1,10 +1,12 @@
+/* eslint-disable import/order */
 import slugify from 'slugify'
 
-import { SHIPPINGS, SHOP_TYPES, STATUS } from './constants/index.js'
-import { fakeData } from './fakeData.js'
 import CategoryModel from '../src/models/category.model.js'
 import ProductModel from '../src/models/product.model.js'
 import ProvinceModel from '../src/models/province.model.js'
+import { SHIPPINGS, SHOP_TYPES, STATUS } from './constants/index.js'
+
+import { fakeData } from './fakeData.js'
 
 const seedCate = Array(40)
   .fill(null)
@@ -75,7 +77,7 @@ const deleteAllProduct = async () => {
   }
 }
 
-const randomProduct = async (category, subCategory) => {
+const randomProduct = async (categorySlug, subCategory) => {
   try {
     const normalizeData = fakeData.map(async ({ item_basic }, index) => {
       const random = Math.floor(Math.random() * 63)
@@ -97,7 +99,7 @@ const randomProduct = async (category, subCategory) => {
           url: `https://cf.shopee.vn/file/${image}_tn`,
           name: item_basic.name + `-${i}`
         })),
-        category,
+        categorySlug,
         subCategory,
         province: { idProvince: province.idProvince, name: province.name },
         shipping: [Object.values(SHIPPINGS)[randomShippingIndex]],
