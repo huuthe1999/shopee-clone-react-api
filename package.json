@@ -23,6 +23,8 @@
   },
   "scripts": {
     "test": "set NODE_ENV=development&&node -r dotenv-safe/config src/test.js",
+    "build": "set NODE_ENV=production&&node -r dotenv-safe/config src/server.js",
+    "build:start": "set NODE_ENV=production&&node -r dotenv-safe/config src/server.js",
     "start": "set NODE_ENV=development&&node -r dotenv-safe/config src/server.js",
     "dev": "set NODE_ENV=development&&nodemon -r dotenv-safe/config src/server.js",
     "prepare": "husky install",
