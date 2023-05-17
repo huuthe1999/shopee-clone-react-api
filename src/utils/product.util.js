@@ -13,10 +13,19 @@ export const mapSortByParam = value => {
   }
 }
 
-export const extractSearchParam = searchParams => {
-  console.log('🚀 ~ extractSearchParam ~ searchParams:', searchParams)
-
-  const likeParams = {}
-  // searchParams.forEach((param)=>)
-  return searchParams
+export const mapFilterByQuery = value => {
+  switch (value) {
+    case 'facet':
+      return 'subCategory'
+    case 'locations':
+      return 'province.idProvince'
+    case 'filters':
+      return 'shopType'
+    case 'status':
+      return 'status'
+    case 'ratingFilter':
+      return 'rating'
+    default:
+      return 'viewed'
+  }
 }

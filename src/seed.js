@@ -4,7 +4,6 @@ import slugify from 'slugify'
 import CategoryModel from '../src/models/category.model.js'
 import ProductModel from '../src/models/product.model.js'
 import ProvinceModel from '../src/models/province.model.js'
-import { SHIPPINGS, SHOP_TYPES, STATUS } from './constants/index.js'
 
 import { fakeData } from './fakeData.js'
 
@@ -81,11 +80,22 @@ const randomProduct = async (categorySlug, subCategory) => {
   try {
     const normalizeData = fakeData.map(async ({ item_basic }, index) => {
       const random = Math.floor(Math.random() * 63)
-      const randomShippingIndex = Math.floor(Math.random() * Object.keys(SHIPPINGS).length)
-      const randomShopTypeIndex = Math.floor(Math.random() * Object.keys(SHOP_TYPES).length)
-      const randomStatusIndex = Math.floor(Math.random() * Object.keys(STATUS).length)
+      let randomShippingIndex = []
+      if (index % 3 === 0) {
+        randomShippingIndex = [0, 1]
+      } else {
+        if (index % 5 === 0) {
+          randomShippingIndex = [1, 2]
+        } else if (index % 7 === 0) {
+          randomShippingIndex = [0, 1, 2]
+        } else {
+          randomShippingIndex = [2]
+        }
+      }
+
+      const randomShopTypeIndex = Math.floor(Math.random() * 3)
+      const randomStatusIndex = Math.floor(Math.random() * 2)
       const province = await ProvinceModel.findOne().skip(random).exec()
-      console.log('🚀 ~ normalizeData ~ province:', province, random)
 
       const slug = slugify(item_basic.name, {
         strict: true,
@@ -102,9 +112,9 @@ const randomProduct = async (categorySlug, subCategory) => {
         categorySlug,
         subCategory,
         province: { idProvince: province.idProvince, name: province.name },
-        shipping: [Object.values(SHIPPINGS)[randomShippingIndex]],
-        shopType: [Object.values(SHOP_TYPES)[randomShopTypeIndex]],
-        status: Object.values(STATUS)[randomStatusIndex],
+        shipping: randomShippingIndex,
+        shopType: randomShopTypeIndex,
+        status: randomStatusIndex,
         isActive: index % 3 === 0,
         price: item_basic.price / 100000,
         quantity: item_basic.stock,

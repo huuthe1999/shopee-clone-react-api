@@ -1,7 +1,7 @@
 import ProductModel from '../models/product.model.js'
 import { createFailedResponse, createSuccessResponse } from '../utils/format-response.util.js'
 import { getPagination } from '../utils/pagination.util.js'
-import { mapSortByParam } from '../utils/product.util.js'
+import { mapFilterByQuery, mapSortByParam } from '../utils/product.util.js'
 import myValidationResult from '../validations/base.validate.js'
 
 const createProduct = async (req, res, next) => {
@@ -41,15 +41,66 @@ const getOneProduct = async (req, res, next) => {
 }
 
 const getProducts = async (req, res, next) => {
-  let { page, size, order, sortBy, categorySlug } = req.query
+  let { page, size, order, sortBy, categorySlug, minPrice, maxPrice, ...restParams } = req.query
 
   sortBy = mapSortByParam(sortBy)
+
+  const filterByObject = Object.entries(restParams).map(([key, value]) => {
+    const filterBy = mapFilterByQuery(key)
+    return {
+      [filterBy]: typeof value === 'object' ? [...value] : [value]
+    }
+  })
 
   // Only order in price
 
   const { limit, offset } = getPagination(page, size)
 
-  const queryOptions = categorySlug ? { categorySlug: { $regex: categorySlug, $options: 'i' } } : {}
+  let queryOptions = categorySlug ? { categorySlug: { $regex: categorySlug, $options: 'i' } } : {}
+
+  if (filterByObject.length > 0) {
+    queryOptions = {
+      $and: [
+        { ...queryOptions },
+        ...filterByObject.map(filterObject => {
+          const [[key, value]] = Object.entries(filterObject)
+
+          // Set condition field by using $gte operator
+          if (key === 'rating') {
+            return {
+              [key]: { $gte: Number(value[0]) }
+            }
+          }
+
+          // Default set condition field by using $in or $eq operator
+          return {
+            [key]: { $in: value }
+          }
+        })
+      ]
+    }
+  }
+
+  // Set condition price field
+  if (minPrice || maxPrice) {
+    const priceOption =
+      minPrice && maxPrice
+        ? { $and: [{ price: { $gte: Number(minPrice) } }, { price: { $lte: Number(maxPrice) } }] }
+        : {
+            price: minPrice ? { $gte: Number(minPrice) } : { $lte: Number(maxPrice) }
+          }
+
+    queryOptions = {
+      ...queryOptions,
+      $and: [
+        ...(queryOptions.$and || []),
+        {
+          ...priceOption
+        }
+      ]
+    }
+  }
+
   try {
     const result = await ProductModel.paginate(queryOptions, {
       offset,

@@ -3,11 +3,10 @@ import { createFailedResponse, createSuccessResponse } from '../utils/format-res
 
 const getProvinces = async (req, res, next) => {
   try {
-    const result = await ProvinceModel.find()
-      .sort({
-        name: 1
-      })
-      .exec()
+    let result = await ProvinceModel.find().exec()
+
+    // Sort in alphabet
+    result = result.sort((a, b) => a.name.localeCompare(b.name))
 
     return res
       .status(201)

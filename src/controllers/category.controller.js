@@ -27,14 +27,23 @@ const createCategory = async (req, res, next) => {
 }
 
 const getOneCategory = async (req, res, next) => {
-  const { id } = req.params
+  let { categorySlug } = req.params
 
-  if (!id) {
-    return res.status(400).json(createFailedResponse('Vui lòng truyền id của danh mục'))
+  let { select } = req.query
+
+  if (!categorySlug) {
+    return res.status(400).json(createFailedResponse('Vui lòng truyền slug của danh mục'))
   }
 
+  select = select ? select.join(' ') : {}
+
   try {
-    const result = await CategoryModel.findById(id).lean().exec()
+    const result = await CategoryModel.findOne(
+      { slug: { $regex: categorySlug, $options: 'i' } },
+      select
+    )
+      .lean()
+      .exec()
     return res.status(201).json(createSuccessResponse('Lấy danh mục thành công', result))
   } catch (error) {
     console.log('🚀 ~ createCategory ~ error:', error)

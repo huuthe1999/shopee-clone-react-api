@@ -8,7 +8,7 @@ import checkRoles from '../middleware/check-roles.middleware.js'
 
 const categoryRoute = Router()
 
-categoryRoute.route('/:id').get(categoryMiddleware.getOneCategory)
+categoryRoute.route('/:categorySlug').get(categoryMiddleware.getOneCategory)
 categoryRoute.route('/').get(cache(ADMIN_EXPIRES_TOKEN_JWT - 60), categoryMiddleware.getCategories)
 
 categoryRoute.use([checkAuth, checkRoles(ROLES.Admin)])

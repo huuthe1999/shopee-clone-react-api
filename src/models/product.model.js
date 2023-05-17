@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import slugify from 'slugify'
 
-import { SHIPPINGS, SHOP_TYPES, STATUS } from '../constants/index.js'
 import { customLabels } from '../utils/pagination.util.js'
 
 const productSchema = new mongoose.Schema(
@@ -31,18 +30,19 @@ const productSchema = new mongoose.Schema(
       name: String
     },
     shipping: {
-      type: [String],
-      default: [SHIPPINGS[2]],
-      enum: Object.values(SHIPPINGS)
+      type: [Number],
+      default: [2],
+      enum: [0, 1, 2] //Express, Fast, Saving
     },
     shopType: {
-      type: [String],
-      enum: Object.values(SHOP_TYPES)
+      type: Number,
+      default: 0,
+      enum: [0, 1, 2] //Default, Mall, Fav
     },
     status: {
-      type: String,
-      default: STATUS[0],
-      enum: Object.values(STATUS)
+      type: Number,
+      default: 0,
+      enum: [0, 1] //New, Used
     },
     isActive: {
       type: Boolean,
