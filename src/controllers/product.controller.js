@@ -1,3 +1,6 @@
+import slugify from 'slugify'
+
+import CategoryModel from '../models/category.model.js'
 import ProductModel from '../models/product.model.js'
 import { createFailedResponse, createSuccessResponse } from '../utils/format-response.util.js'
 import { getPagination } from '../utils/pagination.util.js'
@@ -31,8 +34,44 @@ const getOneProduct = async (req, res, next) => {
   }
 
   try {
-    const result = await ProductModel.findById(id).lean().exec()
-    return res.status(201).json(createSuccessResponse('Lấy sản phẩm thành công', result))
+    let result = await ProductModel.findOneAndUpdate(
+      {
+        _id: id
+      },
+      { $inc: { viewed: 1 } },
+      {
+        new: true
+      }
+    ).lean()
+
+    if (result) {
+      const category = await CategoryModel.findOne(
+        {
+          slug: { $regex: result.categorySlug, $options: 'i' }
+        },
+        'name slug subCategories'
+      )
+
+      const { _id: categoryId, name, slug, subCategories } = category
+
+      const subCategory = subCategories.find(subCate => {
+        return subCate._id.equals(result.subCategory)
+      })
+
+      delete result.categorySlug
+
+      result = {
+        ...result,
+        category: {
+          _id: categoryId,
+          name,
+          slug
+        },
+        subCategory: subCategory !== -1 ? subCategory : null
+      }
+    }
+
+    return res.json(createSuccessResponse('Lấy sản phẩm thành công', result))
   } catch (error) {
     console.log('🚀 ~ createProduct ~ error:', error)
 
@@ -41,7 +80,8 @@ const getOneProduct = async (req, res, next) => {
 }
 
 const getProducts = async (req, res, next) => {
-  let { page, size, order, sortBy, categorySlug, minPrice, maxPrice, ...restParams } = req.query
+  let { page, size, order, sortBy, categorySlug, keyword, minPrice, maxPrice, ...restParams } =
+    req.query
 
   sortBy = mapSortByParam(sortBy)
 
@@ -57,6 +97,18 @@ const getProducts = async (req, res, next) => {
   const { limit, offset } = getPagination(page, size)
 
   let queryOptions = categorySlug ? { categorySlug: { $regex: categorySlug, $options: 'i' } } : {}
+
+  if (keyword) {
+    let keywordSlug = slugify(keyword, {
+      strict: true,
+      locale: 'vi',
+      lower: false
+    })
+    keywordSlug = new RegExp(`\\b${keywordSlug}\\b`, 'i')
+    queryOptions = {
+      $and: [...(queryOptions ? [queryOptions] : []), { slug: { $regex: keywordSlug } }]
+    }
+  }
 
   if (filterByObject.length > 0) {
     queryOptions = {

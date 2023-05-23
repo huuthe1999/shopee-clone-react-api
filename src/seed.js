@@ -76,6 +76,16 @@ const deleteAllProduct = async () => {
   }
 }
 
+const deleteAllProductBySubCate = async subCateId => {
+  try {
+    const result = await ProductModel.deleteMany({ subCategory: subCateId })
+
+    console.log('🚀 ~ randomCate ~ result:', result)
+  } catch (error) {
+    console.log('🚀 ~ CategoryModel.insertMany ~ err:', error)
+  }
+}
+
 const randomProduct = async (categorySlug, subCategory) => {
   try {
     const normalizeData = fakeData.map(async ({ item_basic }, index) => {
@@ -192,5 +202,6 @@ export {
   generateProvinces,
   removeRegexProvinces,
   deleteAllCate,
-  deleteAllProduct
+  deleteAllProduct,
+  deleteAllProductBySubCate
 }

@@ -49,13 +49,15 @@ const getProducts = async (req, res, next) => {
   let findOptions = category ? { category: { $in: category } } : {}
 
   if (name) {
-    const slugName = slugify(name, {
+    let slugName = slugify(name, {
       strict: true,
       locale: 'vi',
       lower: false
     })
-
-    findOptions = { $and: [{ ...findOptions }, { slug: { $regex: slugName, $options: 'i' } }] }
+    slugName = new RegExp(`\\b${slugName}\\b`, 'i')
+    findOptions = {
+      $and: [...(findOptions ? [findOptions] : []), { slug: { $regex: slugName } }]
+    }
   }
 
   try {
