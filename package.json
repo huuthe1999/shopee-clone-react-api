@@ -30,6 +30,7 @@
     "build:start": "set NODE_ENV=production&&node -r dotenv-safe/config src/server.js",
     "start": "set NODE_ENV=development&&node -r dotenv-safe/config src/server.js",
     "dev": "set NODE_ENV=development&&nodemon -r dotenv-safe/config src/server.js",
+    "vercel-build": "echo hello",
     "prepare": "husky install",
     "lint:fix": "eslint --fix --ext .js . --ignore-path .gitignore",
     "prettier:fix": "prettier --ignore-path .gitignore -w \"**/*.js\"",
