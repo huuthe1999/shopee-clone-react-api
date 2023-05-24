@@ -113,7 +113,7 @@ const getProducts = async (req, res, next) => {
   if (filterByObject.length > 0) {
     queryOptions = {
       $and: [
-        { ...queryOptions },
+        ...(queryOptions ? [queryOptions] : []),
         ...filterByObject.map(filterObject => {
           const [[key, value]] = Object.entries(filterObject)
 
@@ -143,14 +143,14 @@ const getProducts = async (req, res, next) => {
           }
 
     queryOptions = {
-      ...queryOptions,
       $and: [
-        ...(queryOptions.$and || []),
+        ...(queryOptions ? [queryOptions] : []),
         {
           ...priceOption
         }
       ]
     }
+    console.log('🚀 ~ getProducts ~ queryOptions:', JSON.stringify(queryOptions))
   }
 
   try {

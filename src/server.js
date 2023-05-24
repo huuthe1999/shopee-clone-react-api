@@ -23,7 +23,9 @@ app.use(cookieParser())
 
 app.set('trust proxy', 1)
 // Welcome path
-app.get('/', (req, res) => res.json({ message: 'Connect to DB successfully' }))
+app.get('/', (req, res) =>
+  res.json({ message: 'Connect to DB successfully', env: process.env.NODE_ENV })
+)
 
 app.use(indexRoute)
 app.use('/admin', adminRoute)
