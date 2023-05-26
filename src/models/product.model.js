@@ -51,6 +51,16 @@ const productSchema = new mongoose.Schema(
     description: {
       type: String
     },
+    vouchers: {
+      type: [
+        {
+          discount: {
+            type: Number,
+            required: true
+          }
+        }
+      ]
+    },
     price: {
       type: Number,
       require: true

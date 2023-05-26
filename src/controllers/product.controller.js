@@ -5,26 +5,6 @@ import ProductModel from '../models/product.model.js'
 import { createFailedResponse, createSuccessResponse } from '../utils/format-response.util.js'
 import { getPagination } from '../utils/pagination.util.js'
 import { mapFilterByQuery, mapSortByParam } from '../utils/product.util.js'
-import myValidationResult from '../validations/base.validate.js'
-
-const createProduct = async (req, res, next) => {
-  const errors = myValidationResult(req).array()
-
-  if (errors.length !== 0) {
-    return res.status(422).json(createFailedResponse('Vui lòng kiêm tra thông tin', errors))
-  }
-
-  try {
-    const result = await ProductModel.create({
-      ...req.body,
-      user: req.userId
-    })
-
-    return res.status(201).json(createSuccessResponse('Tạo Product thành công', result))
-  } catch (error) {
-    next(error)
-  }
-}
 
 const getOneProduct = async (req, res, next) => {
   const { id } = req.params
@@ -150,7 +130,6 @@ const getProducts = async (req, res, next) => {
         }
       ]
     }
-    console.log('🚀 ~ getProducts ~ queryOptions:', JSON.stringify(queryOptions))
   }
 
   try {
@@ -170,6 +149,6 @@ const getProducts = async (req, res, next) => {
   }
 }
 
-const productMiddleware = { createProduct, getOneProduct, getProducts }
+const productMiddleware = { getOneProduct, getProducts }
 
 export default productMiddleware
