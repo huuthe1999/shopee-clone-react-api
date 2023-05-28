@@ -10,6 +10,9 @@ const productSchema = new mongoose.Schema(
       type: String,
       require: true
     },
+    image: {
+      type: String
+    },
     images: [
       {
         uid: String,
@@ -54,9 +57,18 @@ const productSchema = new mongoose.Schema(
     vouchers: {
       type: [
         {
+          type: { type: Number, required: true, enum: [0, 1] }, // 0:Giảm giá % - 1:Giảm x
           discount: {
-            type: Number,
-            required: true
+            type: {
+              percent: {
+                type: Number
+              },
+              price: {
+                type: Number
+              }
+            },
+            required: true,
+            _id: false
           }
         }
       ]
@@ -105,6 +117,10 @@ productSchema.pre('save', function (next) {
       strict: true,
       locale: 'vi'
     })
+  }
+
+  if (this.images) {
+    this.image = this.images[0]
   }
 
   if (!this.discount) {

@@ -20,18 +20,6 @@ const orderSchema = new mongoose.Schema(
       ref: 'Product',
       require: true
     },
-    brief_product: {
-      type: {
-        name: String,
-        image: String,
-        price: Number,
-        categorySlug: String,
-        productSlug: String,
-        isActive: Boolean,
-        discount: Number
-      },
-      require: true
-    },
     user: {
       type: mongoose.Types.ObjectId,
       ref: 'User',

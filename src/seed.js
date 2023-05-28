@@ -6,6 +6,7 @@ import ProductModel from '../src/models/product.model.js'
 import ProvinceModel from '../src/models/province.model.js'
 
 import { fakeData } from './fakeData.js'
+import { splitNumberOnString } from './utils/splitNumberOnString.util.js'
 
 const seedCate = Array(40)
   .fill(null)
@@ -111,12 +112,34 @@ const randomProduct = async (categorySlug, subCategory) => {
         strict: true,
         locale: 'vi'
       })
+      let vouchers
+      const voucher_info = item_basic.voucher_info
+      if (voucher_info) {
+        vouchers = splitNumberOnString(voucher_info.label)
+        vouchers = vouchers?.map(voucher => {
+          const number = voucher.replace(/\D/g, '')
+          if (/k/i.test(voucher)) {
+            return {
+              type: 1,
+              discount: {
+                price: number
+              }
+            }
+          }
+          return {
+            type: 0,
+            discount: {
+              percent: number
+            }
+          }
+        })
+      }
 
       return {
         name: item_basic.name,
         images: item_basic.images.map((image, i) => ({
           uid: image,
-          url: `https://cf.shopee.vn/file/${image}_tn`,
+          url: `https://cf.shopee.vn/file/${image}`,
           name: item_basic.name + `-${i}`
         })),
         categorySlug,
@@ -129,6 +152,7 @@ const randomProduct = async (categorySlug, subCategory) => {
         price: item_basic.price / 100000,
         quantity: item_basic.stock,
         sold: item_basic.sold,
+        vouchers,
         rating: item_basic.item_rating.rating_star,
         discount: item_basic.show_discount,
         viewed: item_basic.liked_count,

@@ -29,8 +29,29 @@ const createOrderValidator = [
     .withMessage('Id không được rỗng')
     .bail()
     .isString()
-    .withMessage('Id không hợp lệ'),
-  body('brief_product').notEmpty().withMessage('Tóm tắt sản phẩm được rỗng')
+    .withMessage('Id không hợp lệ')
 ]
 
-export { createOrderValidator, getOrderValidator }
+const updateOrderValidator = [
+  body('actionType')
+    .notEmpty()
+    .withMessage('ActionType không được rỗng')
+    .bail()
+    .isIn([1, 2])
+    .withMessage('ActionType không hợp lệ'),
+  body('amount')
+    .notEmpty()
+    .withMessage('Số lượng sản phẩm không được rỗng')
+    .bail()
+    .isNumeric()
+    .bail()
+    .withMessage('Số lượng sản phẩm không hợp lệ'),
+  body('orderId')
+    .notEmpty()
+    .withMessage('Id của giỏ hàng không được rỗng')
+    .bail()
+    .isString()
+    .withMessage('Id của giỏ hàng không hợp lệ')
+]
+
+export { createOrderValidator, getOrderValidator, updateOrderValidator }
