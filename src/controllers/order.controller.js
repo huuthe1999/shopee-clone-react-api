@@ -1,4 +1,5 @@
 import OrderModel from '../models/order.model.js'
+import ProductModel from '../models/product.model.js'
 import { createFailedResponse, createSuccessResponse } from '../utils/format-response.util.js'
 import { getPagination } from '../utils/pagination.util.js'
 import myValidationResult from '../validations/base.validate.js'
@@ -27,7 +28,7 @@ const addToOrder = async (req, res, next) => {
 
 const updateOrder = async (req, res, next) => {
   //actionType is in [1,2] ==> 1:update -  2:delete
-  const { amount, orderId, actionType } = req.body
+  const { amount, orderId, actionType, productId } = req.body
 
   const errors = myValidationResult(req).array()
 
@@ -37,19 +38,36 @@ const updateOrder = async (req, res, next) => {
 
   try {
     let result
-    if (actionType === 1) {
-      result = await OrderModel.findOneAndUpdate(
-        { _id: orderId },
-        { $set: { amount: Number(amount) } },
-        { new: true }
-      )
+    if (actionType === 0) {
+      const product = await ProductModel.findOne({
+        _id: productId,
+        quantity: { $gte: Number(amount) }
+      })
+      if (product) {
+        result = await OrderModel.findOneAndUpdate(
+          { _id: orderId, user: req.userId },
+          { $set: { amount: Number(amount) } },
+          {
+            new: true,
+            populate: {
+              path: 'product',
+              select: 'name image price categorySlug slug isActive discount quantity vouchers'
+            }
+          }
+        )
+
+        if (result) {
+          return res.json(createSuccessResponse('Cập nhật sản phẩm thành công', result))
+        }
+      }
     } else {
-      result = await OrderModel.findOneAndDelete({ _id: orderId }, { lean: true })
+      result = await OrderModel.deleteOne({ _id: orderId, user: req.userId })
+      if (result.deletedCount === 1) {
+        return res.json(createSuccessResponse('Xoá sản phẩm thành công'))
+      }
     }
-    if (result) {
-      return res.json(createSuccessResponse('Cập nhật giỏ hàng thành công', result))
-    }
-    return res.status(404).json(createFailedResponse('Không tìm thấy giỏ hàng'))
+
+    return res.status(400).json(createFailedResponse('Cập nhật giỏ hàng thất bại`'))
   } catch (error) {
     next(error)
   }
@@ -64,8 +82,8 @@ const getOrderById = async (req, res, next) => {
 
   if (id) {
     try {
-      const result = await OrderModel.findById(
-        id,
+      const result = await OrderModel.findOne(
+        { _id: id, user: req.userId },
         {},
         {
           populate: {
@@ -73,11 +91,12 @@ const getOrderById = async (req, res, next) => {
             select: 'name image price categorySlug slug isActive discount quantity vouchers'
           }
         }
-      )
+      ).exec()
+
       if (result) {
         return res.json(createSuccessResponse('Lấy giỏ hàng thành công', result))
       }
-      return res.status(404).json(createFailedResponse('Không tìm thấy giỏ hàng'))
+      return res.status(400).json(createFailedResponse('Lấy giỏ hàng thất bại'))
     } catch (error) {
       next(error)
     }
@@ -101,6 +120,10 @@ const getOrder = async (req, res, next) => {
       {
         offset,
         limit,
+        populate: {
+          path: 'product',
+          select: 'name image price categorySlug slug isActive discount quantity vouchers'
+        },
         sort: {
           updatedAt: -1,
           createdAt: -1

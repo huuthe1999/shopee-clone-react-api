@@ -17,7 +17,8 @@ const productSchema = new mongoose.Schema(
       {
         uid: String,
         url: String,
-        name: String
+        name: String,
+        _id: false
       }
     ],
     categorySlug: {

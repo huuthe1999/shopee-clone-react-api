@@ -37,15 +37,10 @@ const updateOrderValidator = [
     .notEmpty()
     .withMessage('ActionType không được rỗng')
     .bail()
-    .isIn([1, 2])
+    .isIn([0, 1])
     .withMessage('ActionType không hợp lệ'),
-  body('amount')
-    .notEmpty()
-    .withMessage('Số lượng sản phẩm không được rỗng')
-    .bail()
-    .isNumeric()
-    .bail()
-    .withMessage('Số lượng sản phẩm không hợp lệ'),
+  body('amount').optional().isNumeric().withMessage('Số lượng sản phẩm không hợp lệ'),
+  body('productId').optional().isString().withMessage('Id của sản phẩm không hợp lệ'),
   body('orderId')
     .notEmpty()
     .withMessage('Id của giỏ hàng không được rỗng')

@@ -87,21 +87,73 @@ const deleteAllProductBySubCate = async subCateId => {
   }
 }
 
+const test = async (shopid, itemid) => {
+  var myHeaders = new Headers()
+  myHeaders.append('sec-ch-ua', '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"')
+  myHeaders.append('sec-ch-ua-mobile', '?0')
+  myHeaders.append('sec-ch-ua-platform', '"Windows"')
+  myHeaders.append('Upgrade-Insecure-Requests', '1')
+  myHeaders.append(
+    'User-Agent',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
+  )
+  myHeaders.append(
+    'Accept',
+    'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
+  )
+  myHeaders.append('Sec-Fetch-Site', 'none')
+  myHeaders.append('Sec-Fetch-Mode', 'navigate')
+  myHeaders.append('Sec-Fetch-User', '?1')
+  myHeaders.append('Sec-Fetch-Dest', 'document')
+  myHeaders.append('host', 'shopee.vn')
+  myHeaders.append(
+    'Cookie',
+    'REC_T_ID=7a0d3fa7-fdd2-11ed-a537-ceb7aabb1607; SPC_F=SGTphtB11POYjoliB15lcuyiZbo3BbxS; SPC_R_T_ID=kLJvQ7Eb7+EI/wvS//jyiN5+Sh8Yr/Idg175H9hEWzg6Qxr5ByKNC9mVBnZpmvBdOcny5lK7EzkwkV7cUklc3meKhGdQN2i6zCP7T5nMCNYQc62RIQpsp7c0fkd0hfvvdWicZdyv9tH9tqc+Ne/9nAoV8to9cd+U9Ia7j0Y0Wiw=; SPC_R_T_IV=MVNOUThKY2ZtbnBHUW9jaw==; SPC_SI=aWFsZAAAAAA3YzY3M2o0RiFtbQAAAAAANmJRUEVQU3U=; SPC_T_ID=kLJvQ7Eb7+EI/wvS//jyiN5+Sh8Yr/Idg175H9hEWzg6Qxr5ByKNC9mVBnZpmvBdOcny5lK7EzkwkV7cUklc3meKhGdQN2i6zCP7T5nMCNYQc62RIQpsp7c0fkd0hfvvdWicZdyv9tH9tqc+Ne/9nAoV8to9cd+U9Ia7j0Y0Wiw=; SPC_T_IV=MVNOUThKY2ZtbnBHUW9jaw=='
+  )
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  }
+
+  return fetch(
+    `https://shopee.vn/api/v4/item/get?shopid=${shopid}&itemid=${itemid}`,
+    requestOptions
+  )
+    .then(response => response.json())
+    .then(result => {
+      return result.data.description
+    })
+    .catch(error => console.log('error', error))
+}
+
 const randomProduct = async (categorySlug, subCategory) => {
   try {
-    const normalizeData = fakeData.map(async ({ item_basic }, index) => {
+    const normalizeData = fakeData.map(async ({ item_basic, shopid, itemid }, index) => {
       const random = Math.floor(Math.random() * 63)
       let randomShippingIndex = []
-      if (index % 3 === 0) {
-        randomShippingIndex = [0, 1]
-      } else {
-        if (index % 5 === 0) {
-          randomShippingIndex = [1, 2]
-        } else if (index % 7 === 0) {
-          randomShippingIndex = [0, 1, 2]
-        } else {
-          randomShippingIndex = [2]
+      if (index % 7 === 0) {
+        randomShippingIndex.push(0)
+        if (index % 2 === 0) {
+          randomShippingIndex.push(2)
         }
+      }
+      if (index % 8 === 0) {
+        randomShippingIndex.push(1)
+        if (index % 3 === 0) {
+          randomShippingIndex.push(1)
+        }
+      }
+      if (index % 9 === 0) {
+        randomShippingIndex.push(2)
+        if (index % 4 === 0) {
+          randomShippingIndex.push(0)
+        }
+      }
+
+      if (randomShippingIndex.length === 0) {
+        randomShippingIndex.push(0)
       }
 
       const randomShopTypeIndex = Math.floor(Math.random() * 3)
@@ -122,7 +174,7 @@ const randomProduct = async (categorySlug, subCategory) => {
             return {
               type: 1,
               discount: {
-                price: number
+                price: number * 1000
               }
             }
           }
@@ -135,13 +187,16 @@ const randomProduct = async (categorySlug, subCategory) => {
         })
       }
 
+      const description = await test(shopid, itemid)
       return {
         name: item_basic.name,
+        image: `https://cf.shopee.vn/file/${item_basic.images[0]}_tn`,
         images: item_basic.images.map((image, i) => ({
           uid: image,
-          url: `https://cf.shopee.vn/file/${image}`,
+          url: `https://cf.shopee.vn/file/${image}_tn`,
           name: item_basic.name + `-${i}`
         })),
+        description,
         categorySlug,
         subCategory,
         province: { idProvince: province.idProvince, name: province.name },
@@ -174,9 +229,9 @@ const randomProduct = async (categorySlug, subCategory) => {
     //   }
     // })
 
-    const result = await ProductModel.insertMany(await Promise.all(normalizeData))
+    await ProductModel.insertMany(await Promise.all(normalizeData))
 
-    // console.log('🚀 ~ randomCate ~ result:', result)
+    console.log('🚀 ~ randomCate ~ result:')
   } catch (error) {
     console.log('🚀 ~ CategoryModel.insertMany ~ err:', error)
   }
@@ -227,5 +282,6 @@ export {
   removeRegexProvinces,
   deleteAllCate,
   deleteAllProduct,
-  deleteAllProductBySubCate
+  deleteAllProductBySubCate,
+  test
 }

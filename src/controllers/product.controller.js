@@ -59,6 +59,37 @@ const getOneProduct = async (req, res, next) => {
   }
 }
 
+const updateProduct = async (req, res, next) => {
+  const { id } = req.params
+  const { description } = req.body
+
+  if (!id) {
+    return res.status(400).json(createFailedResponse('Vui lòng truyền id của sản phẩm'))
+  }
+
+  if (!description) {
+    return res.status(422).json(createFailedResponse('Vui lòng truyền mô tả của sản phẩm'))
+  }
+
+  try {
+    let result = await ProductModel.findOneAndUpdate(
+      {
+        _id: id
+      },
+      { $set: { description } },
+      {
+        new: true
+      }
+    )
+
+    return res.json(createSuccessResponse('Cập nhật sản phẩm thành công', result))
+  } catch (error) {
+    console.log('🚀 ~ createProduct ~ error:', error)
+
+    next(error)
+  }
+}
+
 const getProducts = async (req, res, next) => {
   let { page, size, order, sortBy, categorySlug, keyword, minPrice, maxPrice, ...restParams } =
     req.query
@@ -143,12 +174,12 @@ const getProducts = async (req, res, next) => {
     // res.set('x-total-count', result.totalPages)
     // res.set('Access-Control-Expose-Headers', 'x-total-count')
 
-    return res.status(201).json(createSuccessResponse('Lấy sản phẩm thành công', result))
+    return res.json(createSuccessResponse('Lấy sản phẩm thành công', result))
   } catch (error) {
     next(error)
   }
 }
 
-const productMiddleware = { getOneProduct, getProducts }
+const productMiddleware = { getOneProduct, getProducts, updateProduct }
 
 export default productMiddleware

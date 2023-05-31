@@ -23,6 +23,8 @@ export const mapFilterByQuery = value => {
       return 'shopType'
     case 'status':
       return 'status'
+    case 'shippingOptions':
+      return 'shipping'
     case 'ratingFilter':
       return 'rating'
     default:

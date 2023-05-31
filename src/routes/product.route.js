@@ -6,6 +6,7 @@ const productRoute = Router()
 
 // productRoute.use(cache(ADMIN_EXPIRES_TOKEN_JWT - 60))
 
+productRoute.route('/:id').patch(productMiddleware.updateProduct)
 productRoute.route('/:id').get(productMiddleware.getOneProduct)
 productRoute.route('/').get(productMiddleware.getProducts)
 

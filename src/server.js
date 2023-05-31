@@ -10,7 +10,6 @@ import { corsOptions } from './config/corsOptions.js'
 import { errorHandler, notFoundEndPoint } from './middleware/error-handler.middleware.js'
 import adminRoute from './routes/admin/index.route.js'
 import indexRoute from './routes/index.route.js'
-import { randomProduct } from './seed.js'
 
 connectDB()
 const app = express()
@@ -38,8 +37,5 @@ app.use(errorHandler)
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
 })
-// randomProduct('Thoi-Trang-Nam', '645fd3414ae6af8648806325')
 
 export default app
-// deleteAllProduct()
-// deleteAllProductBySubCate('6460d996eed977fdad32a906')
