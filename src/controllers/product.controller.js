@@ -167,6 +167,7 @@ const getProducts = async (req, res, next) => {
     const result = await ProductModel.paginate(queryOptions, {
       offset,
       limit,
+      projection: '-images',
       // sort: { sortBy: sortBy === 'price' ? order : -1 }
       sort: { [sortBy]: order ?? -1 }
     })

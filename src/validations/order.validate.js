@@ -41,12 +41,20 @@ const updateOrderValidator = [
     .withMessage('ActionType không hợp lệ'),
   body('amount').optional().isNumeric().withMessage('Số lượng sản phẩm không hợp lệ'),
   body('productId').optional().isString().withMessage('Id của sản phẩm không hợp lệ'),
-  body('orderId')
-    .notEmpty()
-    .withMessage('Id của giỏ hàng không được rỗng')
+  body('orderIds')
+    .optional()
+    .isArray()
+    .withMessage('Danh sách Id không hợp lệ')
     .bail()
-    .isString()
-    .withMessage('Id của giỏ hàng không hợp lệ')
+    .custom(value => {
+      // Check if all elements in the array are strings
+      const allStrings = value.every(element => typeof element === 'string')
+      if (!allStrings) {
+        throw new Error('Danh sách Id Phải là string')
+      }
+      return true
+    }),
+  body('orderId').optional().isString().withMessage('Id của giỏ hàng không hợp lệ')
 ]
 
 export { createOrderValidator, getOrderValidator, updateOrderValidator }

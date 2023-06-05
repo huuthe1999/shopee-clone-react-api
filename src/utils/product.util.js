@@ -18,7 +18,7 @@ export const mapFilterByQuery = value => {
     case 'facet':
       return 'subCategory'
     case 'locations':
-      return 'province.idProvince'
+      return 'province._id'
     case 'filters':
       return 'shopType'
     case 'status':

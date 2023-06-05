@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema(
       require: true
     },
     province: {
-      idProvince: String,
+      _id: String,
       name: String
     },
     shipping: {

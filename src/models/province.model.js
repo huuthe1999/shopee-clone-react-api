@@ -2,18 +2,13 @@ import mongoose from 'mongoose'
 
 const provinceSchema = new mongoose.Schema(
   {
-    idProvince: {
-      type: String,
-      require: true,
-      unique: true
-    },
     name: {
       type: String,
       require: true
     }
   },
   {
-    timestamps: true
+    timestamps: false
   }
 )
 

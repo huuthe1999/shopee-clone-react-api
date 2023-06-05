@@ -28,7 +28,7 @@ const addToOrder = async (req, res, next) => {
 
 const updateOrder = async (req, res, next) => {
   //actionType is in [1,2] ==> 1:update -  2:delete
-  const { amount, orderId, actionType, productId } = req.body
+  const { amount, orderId, actionType, productId, orderIds } = req.body
 
   const errors = myValidationResult(req).array()
 
@@ -57,13 +57,16 @@ const updateOrder = async (req, res, next) => {
         )
 
         if (result) {
-          return res.json(createSuccessResponse('Cập nhật sản phẩm thành công', result))
+          return res.json(createSuccessResponse('Cập nhật giỏ hàng thành công', result))
         }
       }
     } else {
-      result = await OrderModel.deleteOne({ _id: orderId, user: req.userId })
-      if (result.deletedCount === 1) {
-        return res.json(createSuccessResponse('Xoá sản phẩm thành công'))
+      const promises = orderIds.map(
+        async _id => await OrderModel.deleteOne({ _id, user: req.userId })
+      )
+      const result = await Promise.all(promises)
+      if (result.length === orderIds.length) {
+        return res.json(createSuccessResponse('Xoá giỏ hàng thành công'))
       }
     }
 
