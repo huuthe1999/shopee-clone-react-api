@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
 
-const provinceSchema = new mongoose.Schema(
+export const provinceSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true
+      required: true
     }
   },
   {

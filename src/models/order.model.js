@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema(
   {
     amount: {
       type: Number,
-      require: true
+      required: true
     },
     status: {
       type: Number,
@@ -18,12 +18,12 @@ const orderSchema = new mongoose.Schema(
     product: {
       type: mongoose.Types.ObjectId,
       ref: 'Product',
-      require: true
+      required: true
     },
     user: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
-      require: true
+      required: true
     }
   },
   {

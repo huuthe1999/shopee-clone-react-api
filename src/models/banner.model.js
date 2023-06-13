@@ -7,11 +7,11 @@ const bannerSchema = new mongoose.Schema(
   {
     image: {
       type: String,
-      require: true
+      required: true
     },
     text: {
       type: String,
-      require: true
+      required: true
     }
   },
   {
@@ -20,7 +20,6 @@ const bannerSchema = new mongoose.Schema(
 )
 
 bannerSchema.set('toJSON', {
-  flattenMaps: false,
   versionKey: false
 })
 

@@ -57,4 +57,21 @@ const updateOrderValidator = [
   body('orderId').optional().isString().withMessage('Id của giỏ hàng không hợp lệ')
 ]
 
-export { createOrderValidator, getOrderValidator, updateOrderValidator }
+const checkoutOrderValidator = [
+  body('data')
+    .isArray({ min: 1 })
+    .withMessage('Mảng dữ liệu không được rỗng')
+    .bail()
+    .custom(value => {
+      if (!Array.isArray(value)) {
+        throw new Error('Dữ liệu phải là dạng mảng')
+      }
+      const invalidItems = value.filter(item => typeof item !== 'string')
+      if (invalidItems.length > 0) {
+        throw new Error('Mảng dữ liệu chỉ chứa kiểu chuỗi')
+      }
+      return true
+    })
+]
+
+export { createOrderValidator, getOrderValidator, updateOrderValidator, checkoutOrderValidator }

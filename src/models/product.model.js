@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true
+      required: true
     },
     image: {
       type: String
@@ -23,11 +23,11 @@ const productSchema = new mongoose.Schema(
     ],
     categorySlug: {
       type: String,
-      require: true
+      required: true
     },
     subCategory: {
       type: mongoose.Types.ObjectId,
-      require: true
+      required: true
     },
     province: {
       _id: String,
@@ -58,7 +58,7 @@ const productSchema = new mongoose.Schema(
     vouchers: {
       type: [
         {
-          type: { type: Number, required: true, enum: [0, 1] }, // 0:Giảm giá % - 1:Giảm x
+          type: { type: Number, requiredd: true, enum: [0, 1] }, // 0:Giảm giá % - 1:Giảm x
           discount: {
             type: {
               percent: {
@@ -68,7 +68,7 @@ const productSchema = new mongoose.Schema(
                 type: Number
               }
             },
-            required: true,
+            requiredd: true,
             _id: false
           }
         }
@@ -76,15 +76,15 @@ const productSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      require: true
+      required: true
     },
     quantity: {
       type: Number,
-      require: true
+      required: true
     },
     rating: {
       type: Number,
-      require: true
+      required: true
     },
     discount: {
       type: Number
@@ -99,7 +99,7 @@ const productSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      require: true,
+      required: true,
       unique: true
     }
   },

@@ -140,6 +140,24 @@ const getOrder = async (req, res, next) => {
   }
 }
 
-const provinceMiddleware = { addToOrder, getOrder, updateOrder, getOrderById }
+const checkOutOrder = async (req, res, next) => {
+  const { data } = req.body
+
+  const errors = myValidationResult(req).array()
+
+  if (errors.length !== 0) {
+    return res.status(422).json(createFailedResponse('Vui lòng kiêm tra thông tin', errors))
+  }
+
+  try {
+    await OrderModel.updateMany({ _id: { $in: data } }, { $set: { status: 1 } })
+
+    return res.json(createSuccessResponse('Đặt đơn hàng thành công'))
+  } catch (error) {
+    next(error)
+  }
+}
+
+const provinceMiddleware = { addToOrder, getOrder, updateOrder, getOrderById, checkOutOrder }
 
 export default provinceMiddleware

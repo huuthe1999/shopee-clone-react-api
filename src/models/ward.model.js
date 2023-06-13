@@ -1,13 +1,13 @@
 import mongoose from 'mongoose'
 
-const wardSchema = new mongoose.Schema(
+export const wardSchema = new mongoose.Schema(
   {
     districtId: {
       type: String
     },
     name: {
       type: String,
-      require: true
+      required: true
     }
   },
   {

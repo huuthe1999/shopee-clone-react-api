@@ -24,4 +24,5 @@ export const STATUS = {
   Used: 'Đã sử dụng'
 }
 
-export const STATUS_ORDER = [-1, 0, 1, 2, 3, 4] //-1:In cart,0:All, 1:Pending, 2:Shipping,3:Shipped,4:Canceled
+//-1:In cart,0:All, 1:Pending, 2:Shipping,3:Shipped,4:Canceled
+export const STATUS_ORDER = [-1, 0, 1, 2, 3, 4]

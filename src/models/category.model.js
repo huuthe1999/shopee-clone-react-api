@@ -8,7 +8,7 @@ const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true
+      required: true
     },
     isActive: {
       type: Boolean,
@@ -23,24 +23,24 @@ const categorySchema = new mongoose.Schema(
     ],
     slug: {
       type: String,
-      require: true,
+      required: true,
       unique: true
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      require: true
+      required: true
     },
     subCategories: {
       type: [
         {
           _id: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true
+            requiredd: true
           },
           name: {
             type: String,
-            required: true
+            requiredd: true
           }
         }
       ],

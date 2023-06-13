@@ -1,13 +1,13 @@
 import mongoose from 'mongoose'
 
-const districtSchema = new mongoose.Schema(
+export const districtSchema = new mongoose.Schema(
   {
     provinceId: {
       type: String
     },
     name: {
       type: String,
-      require: true
+      required: true
     }
   },
   {
