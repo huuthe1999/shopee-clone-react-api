@@ -15,7 +15,7 @@ const addToOrder = async (req, res, next) => {
 
   try {
     await OrderModel.updateOne(
-      { product: productId },
+      { product: productId, status: -1 },
       { ...rest, product: productId, user: req.userId, $inc: { amount: Number(amount) } },
       { upsert: true }
     )
