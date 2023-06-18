@@ -118,20 +118,6 @@ const register = async (req, res, next) => {
   }
 }
 
-const getProfile = async (req, res, next) => {
-  try {
-    const user = await UserModel.findById(req.userId).exec()
-
-    if (!user) {
-      throw createHttpError(404, 'User không tồn tại')
-    }
-
-    res.status(200).json(createSuccessResponse('Lấy thông tin người dùng thành công', user))
-  } catch (error) {
-    next(error)
-  }
-}
-
 const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.cookies
 
@@ -177,6 +163,6 @@ const logOut = (req, res, next) => {
   res.status(200).json(createSuccessResponse(successMessage))
 }
 
-const authMiddleware = { login, register, refreshToken, getProfile, logOut }
+const authMiddleware = { login, register, refreshToken, logOut }
 
 export default authMiddleware

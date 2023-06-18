@@ -169,7 +169,7 @@ const test1 = id => {
   })
 }
 
-const randomProduct = async (categorySlug, subCategory) => {
+const randomProduct = async (categorySlug, subCategory, categoryId) => {
   try {
     const normalizeData = fakeData.map(async ({ item_basic, shopid, itemid }, index) => {
       const random = Math.floor(Math.random() * 63)
@@ -252,7 +252,8 @@ const randomProduct = async (categorySlug, subCategory) => {
         rating: item_basic.item_rating.rating_star,
         discount: item_basic.show_discount,
         viewed: item_basic.liked_count,
-        slug
+        slug,
+        categoryId
       }
     })
 

@@ -8,6 +8,8 @@ import districtRoute from './district.route.js'
 import orderRoute from './order.route.js'
 import productRoute from './product.route.js'
 import provinceRoute from './province.route.js'
+import uploadRoute from './upload.route.js'
+import userRoute from './user.route.js'
 import wardRoute from './ward.route.js'
 
 const indexRoute = Router()
@@ -21,5 +23,7 @@ indexRoute.use('/provinces', provinceRoute)
 indexRoute.use('/districts', districtRoute)
 indexRoute.use('/wards', wardRoute)
 indexRoute.use('/addresses', addressRoute)
+indexRoute.use('/uploads', uploadRoute)
+indexRoute.use('/user', userRoute)
 
 export default indexRoute

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
-import { ROLES } from '../constants/index.js'
+import { ROLES, SEXES } from '../constants/index.js'
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -12,16 +13,28 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false
     },
+    avatar: String,
+    avatarId: {
+      type: String,
+      select: false
+    },
     name: {
       type: String,
       default: 'User'
     },
     date_of_birth: {
       type: Date,
-      default: null
+      transform: v => v.getTime(),
+      set: v => new Date(v),
+      default: new Date(1910, 1, 1)
     },
-    address: { type: String, default: '' },
     phone: { type: String, default: '' },
+    sex: {
+      type: Number,
+      set: v => +v,
+      default: SEXES.None,
+      enum: Object.values(SEXES)
+    },
     roles: {
       type: [String],
       default: ['User'],
@@ -35,7 +48,10 @@ const userSchema = new mongoose.Schema(
       useProjection: true,
       versionKey: false
     },
-    toJSON: { useProjection: true, versionKey: false }
+    toJSON: {
+      useProjection: true,
+      versionKey: false
+    }
   }
 )
 

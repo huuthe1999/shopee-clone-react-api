@@ -27,7 +27,7 @@ const addToOrder = async (req, res, next) => {
 }
 
 const updateOrder = async (req, res, next) => {
-  //actionType is in [1,2] ==> 1:update -  2:delete
+  //actionType is in [0,1] ==> 0:update - 1:delete
   const { amount, orderId, actionType, productId, orderIds } = req.body
 
   const errors = myValidationResult(req).array()
@@ -45,7 +45,7 @@ const updateOrder = async (req, res, next) => {
       })
       if (product) {
         result = await OrderModel.findOneAndUpdate(
-          { _id: orderId, user: req.userId },
+          { _id: orderId, user: req.userId, product: productId },
           { $set: { amount: Number(amount) } },
           {
             new: true,
@@ -70,7 +70,7 @@ const updateOrder = async (req, res, next) => {
       }
     }
 
-    return res.status(400).json(createFailedResponse('Cập nhật giỏ hàng thất bại`'))
+    return res.status(400).json(createFailedResponse('Cập nhật giỏ hàng thất bại'))
   } catch (error) {
     next(error)
   }
@@ -150,9 +150,31 @@ const checkOutOrder = async (req, res, next) => {
   }
 
   try {
-    await OrderModel.updateMany({ _id: { $in: data } }, { $set: { status: 1 } })
+    const orderPromises = data.map(async orderId => {
+      const order = await OrderModel.findOne({ _id: orderId, user: req.userId })
 
-    return res.json(createSuccessResponse('Đặt đơn hàng thành công'))
+      const { matchedCount } = await ProductModel.updateOne(
+        {
+          _id: order.product,
+          quantity: { $gte: Number(order.amount) }
+        },
+        {
+          $inc: { quantity: -Number(order.amount), sold: Number(order.amount) }
+        },
+        { new: true }
+      )
+
+      if (matchedCount > 0) {
+        await OrderModel.updateOne({ _id: orderId, user: req.userId }, { $set: { status: 1 } })
+        return Promise.resolve(`Đặt đơn hàng ${orderId} thành công`)
+      } else {
+        return Promise.reject(`Lỗi tại order ${orderId}`)
+      }
+    })
+
+    const result = await Promise.allSettled(orderPromises)
+
+    return res.json(createSuccessResponse('Đặt đơn hàng thành công', result))
   } catch (error) {
     next(error)
   }

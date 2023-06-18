@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 4000
 // Middleware
 app.use(morgan('dev'))
 app.use(cors(corsOptions))
-app.use(express.json())
+app.use(express.json({ limit: '50mb' }))
 app.use(cookieParser())
 
 app.set('trust proxy', 1)
@@ -37,5 +37,5 @@ app.use(errorHandler)
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
 })
-// randomProduct('Thoi-Trang-Nam', '645fd3414ae6af8648806325')
+// randomProduct('Thoi-Trang-Nam', '645fd3414ae6af8648806325', '645f7a085376c706cc202ad9')
 export default app

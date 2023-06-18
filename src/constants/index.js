@@ -8,6 +8,13 @@ export const ROLES = {
   Admin: 'Admin'
 }
 
+export const SEXES = {
+  None: -1,
+  Male: 0,
+  Female: 1,
+  Other: 2
+}
+
 export const SHIPPINGS = {
   Express: 'Hoả tốc',
   Fast: 'Nhanh',

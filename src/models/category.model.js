@@ -36,11 +36,11 @@ const categorySchema = new mongoose.Schema(
         {
           _id: {
             type: mongoose.Schema.Types.ObjectId,
-            requiredd: true
+            required: true
           },
           name: {
             type: String,
-            requiredd: true
+            required: true
           }
         }
       ],

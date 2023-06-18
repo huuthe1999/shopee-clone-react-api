@@ -26,24 +26,19 @@ const createCategory = async (req, res, next) => {
   }
 }
 
-const getOneCategory = async (req, res, next) => {
-  let { categorySlug } = req.params
+const getCategory = async (req, res, next) => {
+  let { id } = req.params
 
   let { select } = req.query
 
-  if (!categorySlug) {
-    return res.status(400).json(createFailedResponse('Vui lòng truyền slug của danh mục'))
+  if (!id) {
+    return res.status(400).json(createFailedResponse('Vui lòng truyền id của danh mục'))
   }
 
   select = select ? select.join(' ') : {}
 
   try {
-    const result = await CategoryModel.findOne(
-      { slug: { $regex: categorySlug, $options: 'i' } },
-      select
-    )
-      .lean()
-      .exec()
+    const result = await CategoryModel.findById(id, select).lean().exec()
     return res.status(201).json(createSuccessResponse('Lấy danh mục thành công', result))
   } catch (error) {
     console.log('🚀 ~ createCategory ~ error:', error)
@@ -74,6 +69,6 @@ const getCategories = async (req, res, next) => {
   }
 }
 
-const categoryMiddleware = { createCategory, getOneCategory, getCategories }
+const categoryMiddleware = { createCategory, getCategory, getCategories }
 
 export default categoryMiddleware

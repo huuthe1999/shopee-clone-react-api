@@ -91,7 +91,7 @@ const updateProduct = async (req, res, next) => {
 }
 
 const getProducts = async (req, res, next) => {
-  let { page, size, order, sortBy, categorySlug, keyword, minPrice, maxPrice, ...restParams } =
+  let { page, size, order, sortBy, categoryId, keyword, minPrice, maxPrice, ...restParams } =
     req.query
 
   sortBy = mapSortByParam(sortBy)
@@ -107,7 +107,7 @@ const getProducts = async (req, res, next) => {
 
   const { limit, offset } = getPagination(page, size)
 
-  let queryOptions = categorySlug ? { categorySlug: { $regex: categorySlug, $options: 'i' } } : {}
+  let queryOptions = categoryId ? { categoryId } : {}
 
   if (keyword) {
     let keywordSlug = slugify(keyword, {
@@ -168,12 +168,8 @@ const getProducts = async (req, res, next) => {
       offset,
       limit,
       projection: '-images',
-      // sort: { sortBy: sortBy === 'price' ? order : -1 }
       sort: { [sortBy]: order ?? -1 }
     })
-
-    // res.set('x-total-count', result.totalPages)
-    // res.set('Access-Control-Expose-Headers', 'x-total-count')
 
     return res.json(createSuccessResponse('Lấy sản phẩm thành công', result))
   } catch (error) {
