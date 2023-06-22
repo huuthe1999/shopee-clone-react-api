@@ -16,31 +16,37 @@ const getAddresses = async (req, res, next) => {
   }
 }
 
-const setDefaultAddress = async (req, res, next) => {
+const setDefaultOrSelectedAddress = async (req, res, next) => {
   const { id } = req.params
+  const { type } = req.body
+  console.log('🚀 ~ setDefaultOrSelectedAddress ~ type:', type)
 
-  if (!id) {
-    return res.status(400).json(createFailedResponse('Vui lòng truyền id của địa chỉ'))
+  if (!id || type === undefined) {
+    return res.status(400).json(createFailedResponse('Vui lòng truyền id/type của địa chỉ'))
   }
 
   try {
+    const updateField = type === 0 ? 'isDefault' : 'isSelected'
+
     await AddressModel.updateMany(
       {
+        userId: req.userId,
         _id: { $ne: id },
-        isSelected: true
+        [updateField]: true
       },
       {
-        isSelected: false
+        [updateField]: false
       }
     ).exec()
 
     await AddressModel.updateOne(
       {
+        userId: req.userId,
         _id: id,
-        isSelected: false
+        [updateField]: false
       },
       {
-        isSelected: true
+        [updateField]: true
       }
     ).exec()
 
@@ -81,6 +87,55 @@ const createAddress = async (req, res, next) => {
   }
 }
 
-const addressMiddleware = { getAddresses, getAddress, createAddress, setDefaultAddress }
+const updateAddress = async (req, res, next) => {
+  const { id } = req.params
+
+  if (!id) {
+    return res.status(400).json(createFailedResponse('Vui lòng truyền id của địa chỉ'))
+  }
+
+  const errors = myValidationResult(req).array()
+
+  if (errors.length !== 0) {
+    return res.status(422).json(createFailedResponse('Vui lòng kiêm tra thông tin', errors))
+  }
+
+  try {
+    const { matchedCount } = await AddressModel.updateOne({ userId: req.userId }, { ...req.body })
+    if (matchedCount > 0) {
+      return res.status(201).json(createSuccessResponse('Cập nhật địa chỉ thành công'))
+    }
+    return next('Cập nhật địa chỉ thất bại')
+  } catch (error) {
+    next(error)
+  }
+}
+
+const deleteAddress = async (req, res, next) => {
+  const { id } = req.params
+
+  if (!id) {
+    return res.status(400).json(createFailedResponse('Vui lòng truyền id của địa chỉ'))
+  }
+
+  try {
+    const { deletedCount } = await AddressModel.deleteOne({ userId: req.userId, _id: id })
+    if (deletedCount > 0) {
+      return res.json(createSuccessResponse('Xóa địa chỉ thành công'))
+    }
+    return res.status(404).json(createFailedResponse('Xóa địa chỉ thất bại'))
+  } catch (error) {
+    next(error)
+  }
+}
+
+const addressMiddleware = {
+  getAddresses,
+  getAddress,
+  createAddress,
+  setDefaultOrSelectedAddress,
+  updateAddress,
+  deleteAddress
+}
 
 export default addressMiddleware
