@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import createHttpError from 'http-errors'
 
 import UserModel from '../models/user.model.js'
@@ -18,17 +19,17 @@ const getProfile = async (req, res, next) => {
 }
 
 const updateProfile = async (req, res, next) => {
-  // const { avatar } = req.body
+  let { password } = req.body
+  if (password) {
+    password = await bcrypt.hash(password, 10)
+  }
   try {
-    const user = await UserModel.findOneAndUpdate({ _id: req.userId }, { ...req.body })
-      // .select('+avatarId')
-      .exec()
+    const user = await UserModel.findOneAndUpdate(
+      { _id: req.userId },
+      { ...req.body, password }
+    ).exec()
 
     if (user) {
-      // console.log('🚀 ~ updateProfile ~ avatar:', user.avatarId)
-      // if (avatar) {
-      //   myCloudinary.uploader.destroy(user.avatarId)
-      // }
       return res.json(createSuccessResponse('Cập nhật thông tin người dùng thành công', user))
     }
     return next('Cập nhật thông tin người dùng thất bại')
