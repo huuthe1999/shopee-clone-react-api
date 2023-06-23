@@ -66,12 +66,10 @@ const checkoutOrderValidator = [
       if (!Array.isArray(value)) {
         throw new Error('Dữ liệu phải là dạng mảng')
       }
-      const invalidItems = value.filter(item => typeof item !== 'string')
-      if (invalidItems.length > 0) {
-        throw new Error('Mảng dữ liệu chỉ chứa kiểu chuỗi')
-      }
       return true
-    })
+    }),
+  body('data.*.address').notEmpty().withMessage('Địa chỉ không được rỗng'),
+  body('data.*.totalPrice').notEmpty().withMessage('Tổng tiền không được rỗng')
 ]
 
 export { createOrderValidator, getOrderValidator, updateOrderValidator, checkoutOrderValidator }

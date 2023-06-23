@@ -15,6 +15,16 @@ const orderSchema = new mongoose.Schema(
       default: -1,
       enum: STATUS_ORDER
     },
+    voucher: {
+      type: String
+    },
+    totalPrice: {
+      type: Number
+    },
+    address: {
+      type: String,
+      required: true
+    },
     product: {
       type: mongoose.Types.ObjectId,
       ref: 'Product',

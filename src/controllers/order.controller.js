@@ -125,7 +125,10 @@ const getOrder = async (req, res, next) => {
         limit,
         populate: {
           path: 'product',
-          select: 'name image price categorySlug slug isActive discount quantity vouchers'
+          select:
+            Number(status) === 1
+              ? 'name image price discount totalPrice province'
+              : 'name image price categorySlug slug isActive discount quantity vouchers'
         },
         sort: {
           updatedAt: -1,
@@ -150,8 +153,8 @@ const checkOutOrder = async (req, res, next) => {
   }
 
   try {
-    const orderPromises = data.map(async orderId => {
-      const order = await OrderModel.findOne({ _id: orderId, user: req.userId })
+    const orderPromises = data.map(async ({ _id, address, voucher, totalPrice }) => {
+      const order = await OrderModel.findOne({ _id, user: req.userId })
 
       const { matchedCount } = await ProductModel.updateOne(
         {
@@ -165,10 +168,13 @@ const checkOutOrder = async (req, res, next) => {
       )
 
       if (matchedCount > 0) {
-        await OrderModel.updateOne({ _id: orderId, user: req.userId }, { $set: { status: 1 } })
-        return Promise.resolve(`Đặt đơn hàng ${orderId} thành công`)
+        await OrderModel.updateOne(
+          { _id, user: req.userId },
+          { $set: { status: 1 }, address, voucher, totalPrice }
+        )
+        return Promise.resolve(`Đặt đơn hàng ${_id} thành công`)
       } else {
-        return Promise.reject(`Lỗi tại order ${orderId}`)
+        return Promise.reject(`Lỗi tại order ${_id}`)
       }
     })
 
