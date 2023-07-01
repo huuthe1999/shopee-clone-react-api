@@ -56,7 +56,8 @@ const getCategories = async (req, res, next) => {
       {
         select: select ? select : {},
         offset,
-        limit
+        limit,
+        sort: { createdAt: 1 }
       }
     )
 

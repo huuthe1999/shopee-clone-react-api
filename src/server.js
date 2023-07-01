@@ -37,5 +37,12 @@ app.use(errorHandler)
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
 })
-// randomProduct('Thoi-Trang-Nam', '645fd3414ae6af8648806325', '645f7a085376c706cc202ad9')
+
+// randomProduct(
+//   'Giay-Dep-Nam',
+//   '649fca661db8490bdac0a277',
+//   '645f7a085376c706cc202ae5',
+//   100066,
+//   11036279
+// )
 export default app

@@ -5,7 +5,6 @@ import CategoryModel from '../src/models/category.model.js'
 import ProductModel from '../src/models/product.model.js'
 import ProvinceModel from '../src/models/province.model.js'
 
-import { fakeData } from './fakeData.js'
 import DistrictModel from './models/district.model.js'
 import WardModel from './models/ward.model.js'
 import { splitNumberOnString } from './utils/splitNumberOnString.util.js'
@@ -169,9 +168,88 @@ const test1 = id => {
   })
 }
 
-const randomProduct = async (categorySlug, subCategory, categoryId) => {
+const getProductsFromShoppe = async (categoryids, match_id) => {
+  var myHeaders = new Headers()
+  myHeaders.append('sec-ch-ua', '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"')
+  myHeaders.append(
+    'X-Sap-Access-F',
+    '3.2.112.2.0|13|2.9.1-2_5.55.160_0_175|d6a1a92127184ace904e512d0624ab123c03cb47199d44|10900|100'
+  )
+  myHeaders.append('x-sz-sdk-version', '2.9.1-2@1.2.2')
+  myHeaders.append('X-Shopee-Language', 'vi')
+  myHeaders.append('X-Requested-With', 'XMLHttpRequest')
+  myHeaders.append('X-Sap-Access-T', '1688193445')
+  myHeaders.append(
+    'af-ac-enc-dat',
+    'AAcyLjkuMS0yAAABiQ0uvVUAABByAzAAAAAAAAAAAi465Fe5B2VDPZWXhHnYJVwT9uqAJbAicaPiv8tAN/N1LA2d3MBxLUyf/fWlPGfNa8IyFDDskAlYpKqzlJm+Jf5eioRQl/82EyfDx/bVRcPaaRvYm2MuDZ3xsUw78yzCJgifnmgrD4pvPs51B/rL/UHeJxZakEkzXzlUminZqx7uiyz8f88ax6hK5e5Sb5vbZB6U6/JJ3/Z8rdulugBRFRgWlhno08gAI0JsdW1UqBzoDWWOnZ8JXsnvSVLqPgqy5L4AcyDB/xy2ZlnLL3E1QsSPNPE/A8eyuFPBqO4BAk3FoXPViQP6A8/XipHMIl2f3l/T4hEzdx5dQ81KcfADLzUc6Sk4ypkyW19I8PgFsN+quEWzMxTFA6m2NVJ4wTXnWCWK1bSpJuZz8WAYHawjTp1YO8miicRH2NWpoVVtEedxyq1ZSrmEOQ58+4P3m0t4uWKWwYWX4/OzOXa+YTkZ+COrT0x66E0mFKGZpnE1uUxY4WLjky7yEWcmdZS5LsYDM3Ax8l9FO2PjI/cKzAZP268uvFOGXKo8sCf4Rf8zqP+fZJAzmBDvya3HU5y3CJmISiO6QmgCeKfFE01roJy9CL8HYkCXXKo8sCf4Rf8zqP+fZJAzmBifqFuAxsGc4gQnrcFfv3w3HX9t48LZHNoFHZYErxw1UQJfq3K1AG1EpKO616ktiwbY7P9KHML6aQtF4FlKd6zQgYWkGn8kVBBpG9xNtG95UlwxswzDtyg/Oz5LRY1VugbY7P9KHML6aQtF4FlKd6zLNRI8tQ7SmFFxsHsJtae8l/82EyfDx/bVRcPaaRvYm3501utISPh8Cuboh9w3Xof2sIwPt4Wt5OfZfPkx9RfhLoOdY0OLTxT+VOqfsrbWerGsBO0WPhLEvFPxIncKp3svWMIgJ6OM8uWan2rfy/9D/760ZL0L/JryHncqHBwMjv439vzknrcdleW6J26R8Slb9HH05W5ON4m2XH+qRPOgMshsdrhNk1+BJI24ftEb2kNjbVkUQ3c0ZplE3WR4+lTRHJJ2HKErNOh5euwKv/tW29epMeIAg6F91FIObWlA4SZkDaCkQ4I1LDzDNBDGMPA='
+  )
+  myHeaders.append('X-Sap-Access-S', 'p4xiAXi2T5Fc_S8ZNG-tYBqjQIC2bS8CmNZ-NrPmc70=')
+  myHeaders.append(
+    'edffa8dc',
+    "5j!!]c%ltEiJA/Zr/FOsTgTG!d;]tLd^7!+;j5^_Hbrt,nV5PJqOK^/UK*fG*%b0;F4DFsOJ0SBbf=i\\'9!sb@UWD?g%-*pko#Vni-Yah70UZS'g`s!/ne,OK(c3qdX+N'.[hXD$9D`.L5KO5\\5)&2+<IsBTP.,5fpjVLR#[p]/uBub*2kEnU=.Akag&dEnCmS5Z%l=5ZQopmf2gFGFmH&\\9[<QfEM;VN=0o?=<h<h,\\P(fSGDeSfWCT.T*K2Q60m<NB`>i?\\D_a6/A\"t<D9_r;@g;SFRCng(+&3a)GfPj]hR$i7/r/&om'Lb_r\\:N-il=L,YD=Zb%W^UAkGTH=&\"BK8iig=tq`-NgjUF[VV?WaPZZMmm*?l_]3mH>NqhWXB0UVK:I"
+  )
+  myHeaders.append('X-CSRFToken', 'eHmQ4q9ItjiVt2PWvDwZZNQmhNN9GQnd')
+  myHeaders.append('sec-ch-ua-platform', '"Windows"')
+  myHeaders.append('8f541ba5', "45'uKLE=98g]B#&:uOZrNY0pV")
+  myHeaders.append('sec-ch-ua-mobile', '?0')
+  myHeaders.append(
+    'User-Agent',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
+  )
+  myHeaders.append('Content-Type', 'application/json')
+  myHeaders.append('X-API-SOURCE', 'pc')
+  myHeaders.append('Accept', 'application/json')
+  myHeaders.append('x-sap-ri', 'b1c99f64ae01332a235940317fc84d89e995e32c3474da5f')
+  myHeaders.append('f49a8c0', "J/h'tWQ#>en^2Y3YC1C8;?*WE")
+  myHeaders.append(
+    'af-ac-enc-sz-token',
+    '9qHRNjPNSVrtIyFcfqQI8Q==|UAzxuScGvDcte8tXuNSksbrrZk3z/N61mTIxUiAdzHFzws3utMs/4BFXd6ybZU8qZRgz6xWeo/pDKgLBTWvshNDr7gcXn9KaCiiv|i0ubbm69CyBJUI8v|06|3'
+  )
+  myHeaders.append(
+    'sz-token',
+    '9qHRNjPNSVrtIyFcfqQI8Q==|UAzxuScGvDcte8tXuNSksbrrZk3z/N61mTIxUiAdzHFzws3utMs/4BFXd6ybZU8qZRgz6xWeo/pDKgLBTWvshNDr7gcXn9KaCiiv|i0ubbm69CyBJUI8v|06|3'
+  )
+  myHeaders.append('Sec-Fetch-Site', 'same-origin')
+  myHeaders.append('Sec-Fetch-Mode', 'cors')
+  myHeaders.append('Sec-Fetch-Dest', 'empty')
+  myHeaders.append('host', 'shopee.vn')
+  myHeaders.append(
+    'Cookie',
+    'REC_T_ID=8186bd47-028d-11ee-8190-2cea7f806765; SPC_CLIENTID=bjd2RWwyVHNQcnNWbuvkdjkaoxqcdowb; SPC_EC=SXBPWEprTllJZXdSWklsa4P3ILqa4rkJTrMCmPXfmgRHdzlVnHqkre9QcSED+LfxYpEhJUvTnhPT/1VZW79iqNsUzaARrRA4suibYXVEXAjdRzDOCY+fXMfow57nsj1BoDP6cCDglIsKYm/0u6fZ69/BZ67oKK1Vr9Sq55hIqPg=; SPC_F=n7vEl2TsPrsVzROvCQ2NbH7vy6KG9pad; SPC_R_T_ID=ng9xZwd0yDP66vddLsXcz6DE5mG9fMc6LRVkyKDQyqKEhFmfSsA07NacFdxsV6Y+jOn3Rzbm62i2/kIMj7QGK8wZSqU956u6rWCL6NzlHVfh2ascp5MxBWzwMHzwYLQwJckPU2g7ogUT9RDNyQPk66cqTKtkoHCMln3tC03gwpc=; SPC_R_T_IV=QTFQdUQ1aHJya09kOVIxWA==; SPC_SI=3K+aZAAAAABuYmNqeEM4WLRmYQAAAAAAYzJEWmpIcEo=; SPC_ST=.TUVsd0V2WlFtamQzaFZQU35WxcBPjazmkzWAjSC7NcvsKgWqmqZLyTJRDQ8lY6Js5xMwQmhUru2hU7auTX7hQjWqCKdX0jBBTRkxNPhpzOpUmJ/a+Q50V+N0hf3G59YplWlPHmh0Orx0O/Cnkmp8HWUu/kAN0LTcZkt1DJr60lJukLu7pwOs+4E6ZaRmCWbX/aCiUMNywxUTHvIxXOXPWw==; SPC_T_ID=ng9xZwd0yDP66vddLsXcz6DE5mG9fMc6LRVkyKDQyqKEhFmfSsA07NacFdxsV6Y+jOn3Rzbm62i2/kIMj7QGK8wZSqU956u6rWCL6NzlHVfh2ascp5MxBWzwMHzwYLQwJckPU2g7ogUT9RDNyQPk66cqTKtkoHCMln3tC03gwpc=; SPC_T_IV=QTFQdUQ1aHJya09kOVIxWA==; SPC_U=33496067'
+  )
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  }
+
   try {
-    const normalizeData = fakeData.map(async ({ item_basic, shopid, itemid }, index) => {
+    const response = await fetch(
+      `https://shopee.vn/api/v4/search/search_items?by=pop&categoryids=${categoryids}&limit=60&match_id=${match_id}&newest=0&order=desc&page_type=search&scenario=PAGE_CATEGORY&version=2&view_session_id=d1928c3b-92a1-49d8-a8e3-acbd95d81b42`,
+      requestOptions
+    )
+    const result_1 = await response.json()
+    return result_1
+  } catch (error) {
+    return error
+  }
+}
+
+const crawlProducts = async (categoryids, match_id) => {
+  try {
+    let result = await getProductsFromShoppe(categoryids, match_id)
+    console.log('🚀 ~ crawlProducts ~ result:', result.items.length)
+  } catch (error) {
+    console.log('🚀 ~ crawlProducts ~ error:', error)
+  }
+}
+
+const randomProduct = async (categorySlug, subCategory, categoryId, categoryids, match_id) => {
+  try {
+    const result = await getProductsFromShoppe(categoryids, match_id)
+
+    const normalizeData = result.items.map(async ({ item_basic, shopid, itemid }, index) => {
       const random = Math.floor(Math.random() * 63)
       let randomShippingIndex = []
       if (index % 7 === 0) {
@@ -380,5 +458,6 @@ export {
   test,
   test1,
   activeProduct,
+  crawlProducts,
   generateShopeeProvinces
 }
