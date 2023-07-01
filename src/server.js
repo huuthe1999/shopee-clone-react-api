@@ -39,10 +39,10 @@ mongoose.connection.once('open', () => {
 })
 
 // randomProduct(
-//   'Giay-Dep-Nam',
-//   '649fca661db8490bdac0a277',
-//   '645f7a085376c706cc202ae5',
-//   100066,
-//   11036279
+//   'Cham-Soc-Thu-Cung',
+//   '64a00a9dfbcdbdf5076532af',
+//   '645f7a085376c706cc202af1',
+//   100919,
+//   11036478
 // )
 export default app

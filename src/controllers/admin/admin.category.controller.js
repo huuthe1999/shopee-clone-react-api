@@ -112,7 +112,7 @@ const getOneCategory = async (req, res, next) => {
 }
 
 const getCategories = async (req, res, next) => {
-  const { _start = 1, _end = 10, _order, _sort } = req.query
+  const { _start = 0, _end = 10, _order, _sort } = req.query
 
   try {
     const result = await CategoryModel.paginate(
@@ -120,8 +120,8 @@ const getCategories = async (req, res, next) => {
       {
         select: '-slug -user',
         sort: mapSortCategoryParam(_order, _sort),
-        offset: +_start,
-        limit: +_end - +_start
+        offset: Number(_start),
+        limit: Number(_end) - Number(_start)
       }
     )
 

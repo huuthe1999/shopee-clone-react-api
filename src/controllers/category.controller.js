@@ -50,6 +50,7 @@ const getCategory = async (req, res, next) => {
 const getCategories = async (req, res, next) => {
   const { page, size, select } = req.query
   const { limit, offset } = getPagination(page, size)
+
   try {
     const result = await CategoryModel.paginate(
       {},
@@ -57,12 +58,12 @@ const getCategories = async (req, res, next) => {
         select: select ? select : {},
         offset,
         limit,
-        sort: { createdAt: 1 }
+        sort: {
+          createdAt: 1,
+          updatedAt: 1
+        }
       }
     )
-
-    res.set('x-total-count', result.totalPages)
-    res.set('Access-Control-Expose-Headers', 'x-total-count')
 
     return res.status(201).json(createSuccessResponse('Lấy danh mục thành công', result))
   } catch (error) {

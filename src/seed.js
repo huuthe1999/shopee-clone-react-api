@@ -173,24 +173,25 @@ const getProductsFromShoppe = async (categoryids, match_id) => {
   myHeaders.append('sec-ch-ua', '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"')
   myHeaders.append(
     'X-Sap-Access-F',
-    '3.2.112.2.0|13|2.9.1-2_5.55.160_0_175|d6a1a92127184ace904e512d0624ab123c03cb47199d44|10900|100'
+    '3.2.112.2.0|13|2.9.1-2_5.77.469_0_175|84c2b819a2824b22b541b2fdbda3d7c252b942c47d8745|10900|100'
   )
   myHeaders.append('x-sz-sdk-version', '2.9.1-2@1.2.2')
   myHeaders.append('X-Shopee-Language', 'vi')
   myHeaders.append('X-Requested-With', 'XMLHttpRequest')
-  myHeaders.append('X-Sap-Access-T', '1688193445')
+  myHeaders.append('X-Sap-Access-T', '1688210050')
   myHeaders.append(
     'af-ac-enc-dat',
-    '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'
+    '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'
   )
-  myHeaders.append('X-Sap-Access-S', 'p4xiAXi2T5Fc_S8ZNG-tYBqjQIC2bS8CmNZ-NrPmc70=')
-  myHeaders.append(
-    'edffa8dc',
-    "5j!!]c%ltEiJA/Zr/FOsTgTG!d;]tLd^7!+;j5^_Hbrt,nV5PJqOK^/UK*fG*%b0;F4DFsOJ0SBbf=i\\'9!sb@UWD?g%-*pko#Vni-Yah70UZS'g`s!/ne,OK(c3qdX+N'.[hXD$9D`.L5KO5\\5)&2+<IsBTP.,5fpjVLR#[p]/uBub*2kEnU=.Akag&dEnCmS5Z%l=5ZQopmf2gFGFmH&\\9[<QfEM;VN=0o?=<h<h,\\P(fSGDeSfWCT.T*K2Q60m<NB`>i?\\D_a6/A\"t<D9_r;@g;SFRCng(+&3a)GfPj]hR$i7/r/&om'Lb_r\\:N-il=L,YD=Zb%W^UAkGTH=&\"BK8iig=tq`-NgjUF[VV?WaPZZMmm*?l_]3mH>NqhWXB0UVK:I"
-  )
+  myHeaders.append('X-Sap-Access-S', 'zZfk1LULaCdTg6m_TwGQGQp2B88SEDHUx_wccqY027I=')
   myHeaders.append('X-CSRFToken', 'eHmQ4q9ItjiVt2PWvDwZZNQmhNN9GQnd')
+  myHeaders.append('62ac49e2', 'S1_pA]aY<4Zq&R=&]at\\pfP\\A')
   myHeaders.append('sec-ch-ua-platform', '"Windows"')
-  myHeaders.append('8f541ba5', "45'uKLE=98g]B#&:uOZrNY0pV")
+  myHeaders.append(
+    '649f2cee',
+    ']hP%%j9f"lapV=S\'7LdoU"umecZkhL(LQ\\MHRO+_>IEUO:;LG,\\OXUnb524r:o=B8Hu$<o?@ecL]$`I=&JlCKqirG>J)jDD*b(e@AVG6(:WV#neBQ<9[FkI"GUd0<oHs-h=2TqgR_o`,ckeY>Da:B&MJ-XqFg#<-pZ+J;O`s7)`c]p/@FL\\.b&%+Z0<@Cl]9E>h_,L^<W`n?O$PA+97UUTFra_7QCkf=*L\'&;_js,GLm[\\"p)a[#(D)kIe_)6U>@)JppC=0\\?l-O@_#PB#9`N_n`2&D@_8\'<K*du*,.&i<?hFk2FGL?`7T%m3SO+V%#=qSE.<njn+0ajY*+H8:qHR)iIm@mGY\'#br\\!"PEct%Eq!tcA[59Zu.#pY=,,D6\'tVNMU=k"qkW3V'
+  )
+  myHeaders.append('64955e8f', '=a)U.%5aVmU7G4^E`VR`H--0*')
   myHeaders.append('sec-ch-ua-mobile', '?0')
   myHeaders.append(
     'User-Agent',
@@ -199,15 +200,14 @@ const getProductsFromShoppe = async (categoryids, match_id) => {
   myHeaders.append('Content-Type', 'application/json')
   myHeaders.append('X-API-SOURCE', 'pc')
   myHeaders.append('Accept', 'application/json')
-  myHeaders.append('x-sap-ri', 'b1c99f64ae01332a235940317fc84d89e995e32c3474da5f')
-  myHeaders.append('f49a8c0', "J/h'tWQ#>en^2Y3YC1C8;?*WE")
+  myHeaders.append('x-sap-ri', 'd90aa064347dbb4ad0f2263cfdfc58294eca0fe4af7f70b2')
   myHeaders.append(
     'af-ac-enc-sz-token',
-    '9qHRNjPNSVrtIyFcfqQI8Q==|UAzxuScGvDcte8tXuNSksbrrZk3z/N61mTIxUiAdzHFzws3utMs/4BFXd6ybZU8qZRgz6xWeo/pDKgLBTWvshNDr7gcXn9KaCiiv|i0ubbm69CyBJUI8v|06|3'
+    '66w42WG9erO8eG3uzsCVGA==|UAzwuScGvDcte8tXuNSksbrrZk3z/N61mTIxUiAdzHFzws3utMs/4BFXd6ybZU8qZRgz6xWeo/pDKgLBTWvhg9br7wQXm9KaCiiv|i0ubbm69CyBJUI8v|06|3'
   )
   myHeaders.append(
     'sz-token',
-    '9qHRNjPNSVrtIyFcfqQI8Q==|UAzxuScGvDcte8tXuNSksbrrZk3z/N61mTIxUiAdzHFzws3utMs/4BFXd6ybZU8qZRgz6xWeo/pDKgLBTWvshNDr7gcXn9KaCiiv|i0ubbm69CyBJUI8v|06|3'
+    '66w42WG9erO8eG3uzsCVGA==|UAzwuScGvDcte8tXuNSksbrrZk3z/N61mTIxUiAdzHFzws3utMs/4BFXd6ybZU8qZRgz6xWeo/pDKgLBTWvhg9br7wQXm9KaCiiv|i0ubbm69CyBJUI8v|06|3'
   )
   myHeaders.append('Sec-Fetch-Site', 'same-origin')
   myHeaders.append('Sec-Fetch-Mode', 'cors')

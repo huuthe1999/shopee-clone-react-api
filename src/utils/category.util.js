@@ -6,5 +6,5 @@ export const mapSortCategoryParam = (order, sort) => {
       return [sort, orderParam[index]]
     })
   }
-  return { createdAt: -1 }
+  return { createdAt: 1, updatedAt: 1 }
 }
