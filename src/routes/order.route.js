@@ -11,7 +11,7 @@ import {
 
 const orderRoute = Router()
 
-// productRoute.use(cache(ADMIN_EXPIRES_TOKEN_JWT - 60))
+// productRoute.use(cache())
 orderRoute.use([checkAuth])
 
 orderRoute.route('/:id').get(getOrderValidator, orderMiddleware.getOrderById)

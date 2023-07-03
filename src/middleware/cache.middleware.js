@@ -32,6 +32,7 @@ export default function (duration) {
     } else {
       // Send response
       res.sendResponse = res.send
+
       res.send = body => {
         myCache.set(key, body, duration)
         res.sendResponse(body)

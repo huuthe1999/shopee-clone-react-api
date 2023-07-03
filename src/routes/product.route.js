@@ -4,7 +4,7 @@ import productMiddleware from '../controllers/product.controller.js'
 
 const productRoute = Router()
 
-// productRoute.use(cache(ADMIN_EXPIRES_TOKEN_JWT - 60))
+// productRoute.use(cache())
 
 productRoute.route('/:id').patch(productMiddleware.updateProduct)
 productRoute.route('/:id').get(productMiddleware.getOneProduct)

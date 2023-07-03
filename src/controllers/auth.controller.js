@@ -141,7 +141,11 @@ const refreshToken = async (req, res, next) => {
       EXPIRES_TOKEN_JWT
     )
 
-    res.status(201).json(createSuccessResponse('Lấy lại token thành công', { accessToken }))
+    res.json(
+      createSuccessResponse('Lấy lại token thành công', {
+        accessToken
+      })
+    )
   } catch (error) {
     return next(createHttpError(401, 'Phiên đăng nhập đã hết hạn'))
   }

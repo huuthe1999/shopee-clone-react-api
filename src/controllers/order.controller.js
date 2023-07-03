@@ -13,9 +13,17 @@ const addToOrder = async (req, res, next) => {
     return res.status(422).json(createFailedResponse('Vui lòng kiêm tra thông tin', errors))
   }
 
+  const product = await ProductModel.findById(productId)
+  const order = await OrderModel.findOne({ product: productId, status: -1, user: req.userId })
+
+  // Check if amount order > quantity product ==> error
+
+  if (product && order && order.amount + amount > product.quantity) {
+    return res.status(400).json(createFailedResponse('Số lượng sản phẩm đã vượt quá giới hạn'))
+  }
   try {
     await OrderModel.updateOne(
-      { product: productId, status: -1 },
+      { product: productId, status: -1, user: req.userId },
       { ...rest, product: productId, user: req.userId, $inc: { amount: Number(amount) } },
       { upsert: true }
     )
@@ -59,7 +67,11 @@ const updateOrder = async (req, res, next) => {
         if (result) {
           return res.json(createSuccessResponse('Cập nhật giỏ hàng thành công', result))
         }
+        return res.status(400).json(createFailedResponse('Cập nhật giỏ hàng thất bại'))
       }
+      return res
+        .status(400)
+        .json(createFailedResponse('Số lượng sản phẩm đã được cập nhật, vui lòng thử lại!'))
     } else {
       const promises = orderIds.map(
         async _id => await OrderModel.deleteOne({ _id, user: req.userId })
@@ -156,31 +168,50 @@ const checkOutOrder = async (req, res, next) => {
     const orderPromises = data.map(async ({ _id, address, voucher, totalPrice }) => {
       const order = await OrderModel.findOne({ _id, user: req.userId })
 
-      const { matchedCount } = await ProductModel.updateOne(
-        {
-          _id: order.product,
-          quantity: { $gte: Number(order.amount) }
-        },
-        {
-          $inc: { quantity: -Number(order.amount), sold: Number(order.amount) }
-        },
-        { new: true }
-      )
-
-      if (matchedCount > 0) {
-        await OrderModel.updateOne(
-          { _id, user: req.userId },
-          { $set: { status: 1 }, address, voucher, totalPrice }
+      if (order) {
+        const validProduct = await ProductModel.findOneAndUpdate(
+          {
+            _id: order.product,
+            quantity: { $gte: Number(order.amount) }
+          },
+          {
+            $inc: { quantity: -Number(order.amount), sold: Number(order.amount) }
+          },
+          { new: true }
         )
-        return Promise.resolve(`Đặt đơn hàng ${_id} thành công`)
+
+        if (validProduct) {
+          await OrderModel.updateOne(
+            { _id, user: req.userId },
+            { $set: { status: 1 }, address, voucher, totalPrice }
+          )
+          return Promise.resolve()
+        } else {
+          return Promise.reject(_id)
+        }
       } else {
-        return Promise.reject(`Lỗi tại order ${_id}`)
+        return Promise.reject(`Không tìm thấy đơn hàng ${_id}`)
       }
     })
 
     const result = await Promise.allSettled(orderPromises)
 
-    return res.json(createSuccessResponse('Đặt đơn hàng thành công', result))
+    const invalidOrders = result
+      .filter(({ status }) => status === 'rejected')
+      .map(({ reason }) => reason)
+    const hasInvalidOrder = invalidOrders.length > 0
+
+    if (hasInvalidOrder) {
+      return res
+        .status(400)
+        .json(
+          createFailedResponse(
+            'Một số sản phẩm đã được cập nhật mới, vui lòng tải lại trang và chọn lại',
+            invalidOrders
+          )
+        )
+    }
+    return res.json(createSuccessResponse('Đặt đơn hàng thành công'))
   } catch (error) {
     next(error)
   }
