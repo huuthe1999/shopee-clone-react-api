@@ -1,7 +1,7 @@
 {
   "license": "ISC",
   "version": "1.0.0",
-  "main": "src/server.js",
+  "main": "index.js",
   "type": "module",
   "engines": {
     "node": "18.x"
@@ -26,10 +26,10 @@
   },
   "scripts": {
     "test": "set NODE_ENV=development&&node -r dotenv-safe/config src/test.js",
-    "build": "set NODE_ENV=production&&node -r dotenv-safe/config src/server.js",
-    "build:start": "set NODE_ENV=production&&node -r dotenv-safe/config src/server.js",
-    "start": "set NODE_ENV=development&&node -r dotenv-safe/config src/server.js",
-    "dev": "set NODE_ENV=development&&nodemon -r dotenv-safe/config src/server.js",
+    "build": "node index.js",
+    "build:start": "set NODE_ENV=production&&node -r dotenv-safe/config index.js",
+    "start": "set NODE_ENV=production&&node index.js",
+    "dev": "set NODE_ENV=development&&nodemon -r dotenv-safe/config index.js",
     "vercel-build": "echo hello",
     "prepare": "husky install",
     "lint:fix": "eslint --fix --ext .js . --ignore-path .gitignore",

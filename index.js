@@ -5,11 +5,11 @@ import express from 'express'
 import 'express-async-errors'
 import morgan from 'morgan'
 
-import connectDB from './config/connectDB.js'
-import { corsOptions } from './config/corsOptions.js'
-import { errorHandler, notFoundEndPoint } from './middleware/error-handler.middleware.js'
-import adminRoute from './routes/admin/index.route.js'
-import indexRoute from './routes/index.route.js'
+import connectDB from './src/config/connectDB.js'
+import { corsOptions } from './src/config/corsOptions.js'
+import { errorHandler, notFoundEndPoint } from './src/middleware/error-handler.middleware.js'
+import adminRoute from './src/routes/admin/index.route.js'
+import indexRoute from './src/routes/index.route.js'
 
 const app = express()
 const PORT = process.env.PORT || 4000
