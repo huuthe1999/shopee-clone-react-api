@@ -1,0 +1,23 @@
+# fly.toml app configuration file generated for long-river-6375 on 2023-09-03T17:24:08+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "long-river-6375"
+primary_region = "hkg"
+
+[build]
+
+[env]
+  PORT = 4000
+  CLOUDINARY_NAME = "dknvhah81"
+  CLOUDINARY_UPLOAD_PRESET = "cate-banner"
+  CLOUDINARY_UPLOAD_PRESET_AVATAR = "avatar"
+
+[http_service]
+  internal_port = 4000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]

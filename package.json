@@ -1,7 +1,7 @@
 {
   "license": "ISC",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "type": "module",
   "engines": {
     "node": "18.x"
@@ -26,10 +26,10 @@
   },
   "scripts": {
     "test": "set NODE_ENV=development&&node -r dotenv-safe/config src/test.js",
-    "build": "node index.js",
-    "build:start": "set NODE_ENV=production&&node -r dotenv-safe/config index.js",
-    "start": "set NODE_ENV=production&&node index.js",
-    "dev": "set NODE_ENV=development&&nodemon -r dotenv-safe/config index.js",
+    "build": "set NODE_ENV=production&&node src/server.js",
+    "build:start": "set NODE_ENV=production&&node -r dotenv-safe/config src/server.js",
+    "start": "set NODE_ENV=production&&node src/server.js",
+    "dev": "set NODE_ENV=development&&nodemon -r dotenv-safe/config src/server.js",
     "vercel-build": "echo hello",
     "prepare": "husky install",
     "lint:fix": "eslint --fix --ext .js . --ignore-path .gitignore",
@@ -39,6 +39,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.5.0",
     "@commitlint/config-conventional": "^17.4.4",
+    "@flydotio/dockerfile": "^0.4.8",
     "@types/node": "^18.15.7",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
